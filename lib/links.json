@@ -1,0 +1,52 @@
+[
+    {
+        "code": "linkedin",
+        "label": "LinkedIn",
+        "destinationUrl": "https://www.linkedin.com/in/hasitha-sandakelum/"
+    },
+    {
+        "code": "github",
+        "label": "GitHub",
+        "destinationUrl": "https://github.com/dev-sandakelum"
+    },
+    {
+        "code": "msplan/a",
+        "label": "MS Learn Plan A",
+        "destinationUrl": "https://learn.microsoft.com/plans/7p35b8tjjwjg8g?sharingId=3A4A09297CBBCEF8&wt.mc_id=studentamb_510869"
+    },
+    {
+        "code": "msplan/b",
+        "label": "MS Learn Plan B",
+        "destinationUrl": "https://learn.microsoft.com/plans/gmoni3t6e2x733?sharingId=3A4A09297CBBCEF8&wt.mc_id=studentamb_510869"
+    },
+    {
+        "code": "msplan/d",
+        "label": "MS Learn Plan D",
+        "destinationUrl": "https://learn.microsoft.com/plans/7p35b8t7m2e6ng?sharingId=3A4A09297CBBCEF8&wt.mc_id=studentamb_510869"
+    },
+    {
+        "code": "msplan/f",
+        "label": "MS Learn Plan F",
+        "destinationUrl": "https://learn.microsoft.com/plans/1ormiotp62yory?sharingId=3A4A09297CBBCEF8&wt.mc_id=studentamb_510869"
+    },
+    {
+        "code": "msplan/g",
+        "label": "MS Learn Plan G",
+        "destinationUrl": "https://learn.microsoft.com/plans/e6mniot3d1ongj?sharingId=3A4A09297CBBCEF8&wt.mc_id=studentamb_510869"
+    },
+    {
+        "code": "msplan/h",
+        "label": "MS Learn Plan H",
+        "destinationUrl": "https://learn.microsoft.com/plans/mo8ni7txr4mjd3?sharingId=3A4A09297CBBCEF8&wt.mc_id=studentamb_510869"
+    },
+    {
+        "code": "msplan/j",
+        "label": "MS Learn Plan J",
+        "destinationUrl": "https://learn.microsoft.com/plans/xk87ipt4pnn1m7?sharingId=3A4A09297CBBCEF8&wt.mc_id=studentamb_510869"
+    },
+    {
+        "code": "msplan/k",
+        "label": "MS Learn Plan K",
+        "destinationUrl": "https://learn.microsoft.com/plans/8pr1bzt1po268p?sharingId=3A4A09297CBBCEF8&wt.mc_id=studentamb_510869"
+    }
+]
