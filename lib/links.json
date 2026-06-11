@@ -2,11 +2,15 @@
     {
         "code": "linkedin",
         "label": "LinkedIn",
+        "subtitle": "Connect with me",
+        "icon": "/link/img/linkedin.png",
         "destinationUrl": "https://www.linkedin.com/in/hasitha-sandakelum/"
     },
     {
         "code": "github",
         "label": "GitHub",
+        "subtitle": "Check out my projects",
+        "icon": "https://cdn.simpleicons.org/github/181717",
         "destinationUrl": "https://github.com/dev-sandakelum"
     },
     {

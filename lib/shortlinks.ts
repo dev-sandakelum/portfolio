@@ -4,6 +4,8 @@ export type Shortlink = {
   code: string;
   label: string;
   destinationUrl: string;
+  icon?: string;
+  subtitle?: string;
 };
 
 export function getShortlinks(): Shortlink[] {

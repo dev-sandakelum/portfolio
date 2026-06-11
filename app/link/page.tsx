@@ -1,6 +1,7 @@
-import { getShortlinks } from "@/lib/shortlinks";
+import Image from "next/image";
+import { getShortlinks, Shortlink } from "@/lib/shortlinks";
 
-const ICONS: Record<string, string> = {
+const ABBR: Record<string, string> = {
   linkedin: "in",
   github: "gh",
 };
@@ -13,20 +14,32 @@ function getDomain(url: string): string {
   }
 }
 
-function Badge({ code }: { code: string }) {
-  const abbr = ICONS[code];
-  if (abbr) {
+function Badge({ link }: { link: Shortlink }) {
+  if (link.icon) {
     return (
-      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 text-xs font-bold text-white">
-        {abbr}
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-100 bg-white p-1.5 shadow-sm">
+        <Image
+          src={link.icon}
+          alt={link.label}
+          width={28}
+          height={28}
+          className="h-full w-full object-contain"
+          unoptimized
+        />
       </span>
     );
   }
-  // msplan badge — show letter
-  const letter = code.split("/")[1]?.toUpperCase() ?? "?";
+
+  const abbr = ABBR[link.code] ?? link.code.split("/")[1]?.toUpperCase() ?? "?";
+  const isplan = link.code.includes("/");
+
   return (
-    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-xs font-bold text-white">
-      {letter}
+    <span
+      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xs font-bold text-white ${
+        isplan ? "bg-indigo-600" : "bg-slate-900"
+      }`}
+    >
+      {abbr}
     </span>
   );
 }
@@ -39,7 +52,7 @@ export default function LinksPage() {
   const plans = links.filter((l) => l.code.includes("/"));
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-16 font-sans">
+    <main className="min-h-screen bg-slate-50 px-4 py-16">
       <div className="mx-auto max-w-xl space-y-12">
 
         {/* Header */}
@@ -68,17 +81,19 @@ export default function LinksPage() {
                     href={`${origin}/link/${link.code}`}
                     className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm transition hover:border-slate-300 hover:shadow-md"
                   >
-                    <Badge code={link.code} />
+                    <Badge link={link} />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-slate-800 group-hover:text-slate-900">
                         {link.label}
                       </p>
-                      <p className="truncate text-xs text-slate-400">
-                        {getDomain(link.destinationUrl)}
-                      </p>
+                      {link.subtitle ? (
+                        <p className="truncate text-xs text-slate-400">{link.subtitle}</p>
+                      ) : (
+                        <p className="truncate text-xs text-slate-400">{getDomain(link.destinationUrl)}</p>
+                      )}
                     </div>
                     <svg
-                      className="h-4 w-4 text-slate-300 transition group-hover:text-slate-500 shrink-0"
+                      className="h-4 w-4 shrink-0 text-slate-300 transition group-hover:text-slate-500"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth={2}
@@ -106,17 +121,19 @@ export default function LinksPage() {
                     href={`${origin}/link/${link.code}`}
                     className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm transition hover:border-indigo-200 hover:shadow-md"
                   >
-                    <Badge code={link.code} />
+                    <Badge link={link} />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-slate-800 group-hover:text-slate-900">
                         {link.label}
                       </p>
-                      <p className="truncate text-xs text-slate-400">
-                        learn.microsoft.com
-                      </p>
+                      {link.subtitle ? (
+                        <p className="truncate text-xs text-slate-400">{link.subtitle}</p>
+                      ) : (
+                        <p className="truncate text-xs text-slate-400">learn.microsoft.com</p>
+                      )}
                     </div>
                     <svg
-                      className="h-4 w-4 text-slate-300 transition group-hover:text-indigo-400 shrink-0"
+                      className="h-4 w-4 shrink-0 text-slate-300 transition group-hover:text-indigo-400"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth={2}
