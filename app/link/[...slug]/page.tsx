@@ -86,13 +86,13 @@ export default function LinkRedirectPage() {
       >
         {/* Icon */}
         {link.icon ? (
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-slate-100 bg-slate-50 p-3 shadow-sm">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-slate-100 bg-slate-50 overflow-hidden shadow-sm">
             <Image
               src={link.icon}
               alt={link.label}
               width={48}
               height={48}
-              className="h-full w-full object-contain"
+              className="h-full w-full object-cover rounded-xl"
               unoptimized
             />
           </div>

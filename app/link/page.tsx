@@ -17,13 +17,13 @@ function getDomain(url: string): string {
 function Badge({ link }: { link: Shortlink }) {
   if (link.icon) {
     return (
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-100 bg-white p-1.5 shadow-sm">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-100 bg-white overflow-hidden shadow-sm">
         <Image
           src={link.icon}
           alt={link.label}
           width={28}
           height={28}
-          className="h-full w-full object-contain"
+          className="h-full w-full object-cover rounded-xl"
           unoptimized
         />
       </span>
