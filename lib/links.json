@@ -16,41 +16,49 @@
     {
         "code": "msplan/a",
         "label": "MS Learn Plan A",
+        "subtitle": "Mastering Microsoft Search",
         "destinationUrl": "https://learn.microsoft.com/plans/7p35b8tjjwjg8g?sharingId=3A4A09297CBBCEF8&wt.mc_id=studentamb_510869"
     },
     {
         "code": "msplan/b",
         "label": "MS Learn Plan B",
+        "subtitle": "GitHub Essentials",
         "destinationUrl": "https://learn.microsoft.com/plans/gmoni3t6e2x733?sharingId=3A4A09297CBBCEF8&wt.mc_id=studentamb_510869"
     },
     {
         "code": "msplan/d",
         "label": "MS Learn Plan D",
+        "subtitle": "OneNote",
         "destinationUrl": "https://learn.microsoft.com/plans/7p35b8t7m2e6ng?sharingId=3A4A09297CBBCEF8&wt.mc_id=studentamb_510869"
     },
     {
         "code": "msplan/f",
         "label": "MS Learn Plan F",
+        "subtitle": ".NET",
         "destinationUrl": "https://learn.microsoft.com/plans/1ormiotp62yory?sharingId=3A4A09297CBBCEF8&wt.mc_id=studentamb_510869"
     },
     {
         "code": "msplan/g",
         "label": "MS Learn Plan G",
+        "subtitle": "Data Analytics & AI Apps",
         "destinationUrl": "https://learn.microsoft.com/plans/e6mniot3d1ongj?sharingId=3A4A09297CBBCEF8&wt.mc_id=studentamb_510869"
     },
     {
         "code": "msplan/h",
         "label": "MS Learn Plan H",
+        "subtitle": "Microsoft Fabric",
         "destinationUrl": "https://learn.microsoft.com/plans/mo8ni7txr4mjd3?sharingId=3A4A09297CBBCEF8&wt.mc_id=studentamb_510869"
     },
     {
         "code": "msplan/j",
         "label": "MS Learn Plan J",
+        "subtitle": "Azure",
         "destinationUrl": "https://learn.microsoft.com/plans/xk87ipt4pnn1m7?sharingId=3A4A09297CBBCEF8&wt.mc_id=studentamb_510869"
     },
     {
         "code": "msplan/k",
         "label": "MS Learn Plan K",
+        "subtitle": "PowerShell",
         "destinationUrl": "https://learn.microsoft.com/plans/8pr1bzt1po268p?sharingId=3A4A09297CBBCEF8&wt.mc_id=studentamb_510869"
     }
 ]
