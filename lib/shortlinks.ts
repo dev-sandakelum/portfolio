@@ -1,4 +1,4 @@
-import links from "./links.json";
+import rawLinks from "./links.json";
 
 export type Shortlink = {
   code: string;
@@ -8,6 +8,8 @@ export type Shortlink = {
   subtitle?: string;
   hidden?: boolean;
 };
+
+const links = rawLinks as Shortlink[];
 
 export function getShortlinks(): Shortlink[] {
   return links;
