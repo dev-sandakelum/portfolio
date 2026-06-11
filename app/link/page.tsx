@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { getShortlinks, Shortlink } from "@/lib/shortlinks";
+import { getPublicShortlinks, Shortlink } from "@/lib/shortlinks";
 
 const ABBR: Record<string, string> = {
   linkedin: "in",
@@ -45,7 +45,7 @@ function Badge({ link }: { link: Shortlink }) {
 }
 
 export default function LinksPage() {
-  const links = getShortlinks();
+  const links = getPublicShortlinks();
   const origin = process.env.NEXT_PUBLIC_SITE_URL ?? "";
 
   const social = links.filter((l) => !l.code.includes("/"));

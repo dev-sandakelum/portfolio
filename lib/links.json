@@ -14,6 +14,13 @@
         "destinationUrl": "https://github.com/dev-sandakelum"
     },
     {
+        "code": "h/answers",
+        "label": "MS Learn Plans Answers",
+        "subtitle": "Google Drive folder",
+        "icon": "https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png",
+        "destinationUrl": "https://drive.google.com/drive/u/8/folders/14Lb-QbTXs01AYhhMZJEObO1p7XV8sCCF"
+    },
+    {
         "code": "msplan/a",
         "label": "MS Learn Plan A",
         "subtitle": "Mastering Microsoft Search",

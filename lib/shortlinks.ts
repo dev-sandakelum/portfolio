@@ -6,10 +6,15 @@ export type Shortlink = {
   destinationUrl: string;
   icon?: string;
   subtitle?: string;
+  hidden?: boolean;
 };
 
 export function getShortlinks(): Shortlink[] {
   return links;
+}
+
+export function getPublicShortlinks(): Shortlink[] {
+  return links.filter((l) => !l.hidden && !l.code.startsWith("h/"));
 }
 
 export function getShortlinkByCode(code: string): Shortlink | undefined {
