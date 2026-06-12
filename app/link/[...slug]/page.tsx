@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { getShortlinkByCode } from "@/lib/shortlinks";
+import { getAiLinkByCode } from "@/lib/ai-shortlinks";
 
 export default function LinkRedirectPage() {
   const params = useParams<{ slug: string[] }>();
   const code = Array.isArray(params.slug) ? params.slug.join("/") : params.slug;
-  const link = code ? getShortlinkByCode(code) : undefined;
+  const link = code ? (getShortlinkByCode(code) ?? getAiLinkByCode(code)) : undefined;
   const [progress, setProgress] = useState(0);
   const [visible, setVisible] = useState(false);
 

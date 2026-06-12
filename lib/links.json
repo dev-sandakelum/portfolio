@@ -13,7 +13,20 @@
         "icon": "/link/img/github.png",
         "destinationUrl": "https://github.com/dev-sandakelum"
     },
-    
+    {
+        "code": "youtube",
+        "label": "YouTube",
+        "subtitle": "Watch my videos",
+        "icon": "/link/img/youtube.png",
+        "destinationUrl": "https://www.youtube.com/@hasitha_sandakelum"
+    },
+    {
+        "code": "whatsapp",
+        "label": "WhatsApp Channel",
+        "subtitle": "Join my channel",
+        "icon": "/link/img/whatsapp.png",
+        "destinationUrl": "https://whatsapp.com/channel/0029VbCDy0fCxoAr9HjWEG1r"
+    },
     {
         "code": "h/answers",
         "label": "MS Learn Plans Answers",
