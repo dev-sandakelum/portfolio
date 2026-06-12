@@ -13,7 +13,7 @@
     { "code": "chat/phind",         "label": "Phind",              "subtitle": "Dev Search AI",        "icon": "/link/img/ai/phind.png",                               "destinationUrl": "https://www.phind.com" },
     { "code": "chat/huggingchat",   "label": "HuggingChat",        "subtitle": "Hugging Face",         "icon": "https://cdn.simpleicons.org/huggingface/FFD21E",        "destinationUrl": "https://huggingface.co/chat" },
     { "code": "chat/together",      "label": "Together AI",        "subtitle": "Playground",           "icon": "https://cdn.simpleicons.org/lightning/FFC107",          "destinationUrl": "https://api.together.xyz/playground" },
-    { "code": "chat/groq",          "label": "Groq",               "subtitle": "Fast Inference",       "icon": "https://cdn.simpleicons.org/groq/F55036",               "destinationUrl": "https://console.groq.com" },
+    { "code": "chat/groq",          "label": "Groq",               "subtitle": "Fast Inference",       "icon": "/link/img/ai/groq.png",                                "destinationUrl": "https://console.groq.com" },
     { "code": "chat/deepseek",      "label": "DeepSeek",           "subtitle": "DeepSeek AI",          "icon": "https://cdn.simpleicons.org/deepseek/4D6BFE",           "destinationUrl": "https://chat.deepseek.com" },
     { "code": "chat/grok",          "label": "Grok",               "subtitle": "xAI",                  "icon": "/link/img/ai/grok.png",                                "destinationUrl": "https://grok.com" },
     { "code": "chat/copilot-ms",    "label": "Copilot",            "subtitle": "Microsoft",            "icon": "/link/img/ai/copilot_ms.png",                          "destinationUrl": "https://copilot.microsoft.com" },
@@ -87,7 +87,7 @@
 
     { "code": "search/perplexity",  "label": "Perplexity",         "subtitle": "AI Search",            "icon": "https://cdn.simpleicons.org/perplexity/1FB8CD",         "destinationUrl": "https://www.perplexity.ai" },
     { "code": "search/brave",       "label": "Brave Search",       "subtitle": "Private Search",       "icon": "https://cdn.simpleicons.org/brave/FB542B",              "destinationUrl": "https://search.brave.com" },
-    { "code": "search/bing-ai",     "label": "Bing AI",            "subtitle": "Microsoft",            "icon": "https://cdn.simpleicons.org/microsoftbing/008373",      "destinationUrl": "https://www.bing.com" },
+    { "code": "search/bing-ai",     "label": "Bing AI",            "subtitle": "Microsoft",            "icon": "/link/img/ai/bing.png",                                "destinationUrl": "https://www.bing.com" },
     { "code": "search/kagi",        "label": "Kagi",               "subtitle": "Premium Search",       "icon": "https://cdn.simpleicons.org/kagi/E66400",               "destinationUrl": "https://kagi.com" },
     { "code": "search/consensus",   "label": "Consensus",          "subtitle": "Research AI",          "icon": "https://cdn.simpleicons.org/semanticscholar/0E4C96",    "destinationUrl": "https://consensus.app" },
     { "code": "search/elicit",      "label": "Elicit",             "subtitle": "Research AI",          "icon": "https://cdn.simpleicons.org/arxiv/B31B1B",              "destinationUrl": "https://elicit.com" },
