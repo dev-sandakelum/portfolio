@@ -26,9 +26,9 @@ import { useMemo, ReactNode } from "react";
 // Inline parser: bold, italic, inline-code
 // ──────────────────────────────────────────────────────────────────────────────
 function parseInline(text: string): ReactNode {
-  // Split on **bold**, _italic_, `code`
+  // Split on **bold**, _italic_, `code`, [label](url)
   const parts: ReactNode[] = [];
-  const regex = /(\*\*(.+?)\*\*|`(.+?)`|_(.+?)_)/g;
+  const regex = /(\*\*(.+?)\*\*|`(.+?)`|_(.+?)_|\[([^\]]+)\]\(([^)]+)\))/g;
   let last = 0;
   let match: RegExpExecArray | null;
 
@@ -36,15 +36,32 @@ function parseInline(text: string): ReactNode {
     if (match.index > last) parts.push(text.slice(last, match.index));
 
     if (match[2] !== undefined) {
+      // **bold**
       parts.push(<strong key={match.index} className="font-semibold text-slate-900">{match[2]}</strong>);
     } else if (match[3] !== undefined) {
+      // `code`
       parts.push(
         <code key={match.index} className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[0.85em] text-slate-700">
           {match[3]}
         </code>
       );
     } else if (match[4] !== undefined) {
+      // _italic_
       parts.push(<em key={match.index} className="italic text-slate-700">{match[4]}</em>);
+    } else if (match[5] !== undefined && match[6] !== undefined) {
+      // [label](url)
+      const href = match[6];
+      const isInternal = href.startsWith("/");
+      parts.push(
+        <a
+          key={match.index}
+          href={href}
+          {...(!isInternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+          className="font-medium text-indigo-600 underline underline-offset-2 transition hover:text-indigo-800"
+        >
+          {match[5]}
+        </a>
+      );
     }
     last = match.index + match[0].length;
   }

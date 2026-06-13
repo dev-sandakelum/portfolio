@@ -235,7 +235,7 @@ AI කියන්නේ **Science Fiction** නොවේ — **Daily Reality**.
 ---
 
 > **ℹ️** මෙවැනි වැදගත් තාක්ෂණික තොරතුරු සරල සිංහලෙන් දැනගන්න අපේ **WhatsApp Channel** එකට අදම එකතු වෙන්න 👇
-> [https://whatsapp.com/channel/0029VbCDy0fCxoAr9HjWEG1r](https://whatsapp.com/channel/0029VbCDy0fCxoAr9HjWEG1r)
+> [WhatsApp Channel එකට Join වෙන්න →](/link/whatsapp)
 
 \`#hasithaSandakelum #ArtificialIntelligence #TechInSinhala #AIHistory #FutureTech #MachineLearning\`
 `;
