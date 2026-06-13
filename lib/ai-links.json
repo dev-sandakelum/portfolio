@@ -18,6 +18,7 @@
     { "code": "chat/grok",          "label": "Grok",               "subtitle": "xAI",                  "icon": "/link/img/ai/grok.png",                                "destinationUrl": "https://grok.com" },
     { "code": "chat/copilot-ms",    "label": "Copilot",            "subtitle": "Microsoft",            "icon": "/link/img/ai/copilot_ms.png",                          "destinationUrl": "https://copilot.microsoft.com" },
     { "code": "chat/openrouter",    "label": "OpenRouter",         "subtitle": "Multi-model",          "icon": "/link/img/ai/openRouter.png",                          "destinationUrl": "https://openrouter.ai/chat" },
+    { "code": "chat/z-ai",          "label": "Z AI",               "subtitle": "z.ai",                 "icon": "/link/img/ai/z-ai.png",                                "destinationUrl": "https://chat.z.ai" },
 
     { "code": "code/v0",                  "label": "v0",                 "subtitle": "Vercel AI",            "icon": "https://cdn.simpleicons.org/v0/000000",                 "destinationUrl": "https://v0.dev" },
     { "code": "code/github-copilot-chat", "label": "Copilot Chat",       "subtitle": "GitHub",               "icon": "https://cdn.simpleicons.org/github/000000",             "destinationUrl": "https://github.com/copilot" },
