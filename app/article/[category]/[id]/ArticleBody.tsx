@@ -198,6 +198,15 @@ function parseBlocks(content: string): ReactNode[] {
       continue;
     }
 
+    // ── horizontal rule ───────────────────────────────────────────────────────
+    if (line.trim() === "---" || line.trim() === "***" || line.trim() === "___") {
+      nodes.push(
+        <hr key={next()} className="my-8 border-t border-slate-200" />
+      );
+      i++;
+      continue;
+    }
+
     // ── headings ──────────────────────────────────────────────────────────────
     if (line.startsWith("#### ")) {
       nodes.push(

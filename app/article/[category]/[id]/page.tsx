@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getArticle, getCategoryInfo, getAllArticles } from "@/lib/articles";
 import type { Metadata } from "next";
@@ -89,6 +90,21 @@ export default async function ArticlePage({ params }: Props) {
           <p className="rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm text-indigo-700 leading-relaxed">
             {meta.description}
           </p>
+
+          {/* Cover image */}
+          {meta.coverImage && (
+            <div className="overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
+              <Image
+                src={meta.coverImage}
+                alt={meta.titleEn}
+                width={800}
+                height={450}
+                className="w-full object-cover"
+                unoptimized
+                priority
+              />
+            </div>
+          )}
         </header>
 
         {/* Divider */}

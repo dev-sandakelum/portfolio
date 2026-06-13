@@ -12,6 +12,7 @@ export type ArticleMeta = {
   date: string;           // ISO date string
   tags: string[];
   readingTime: number;    // minutes
+  coverImage?: string;    // optional cover image path (relative to /public)
 };
 
 export type Article = {
@@ -54,6 +55,16 @@ export const CATEGORIES: CategoryInfo[] = [
     textColor: "text-white",
     borderColor: "border-blue-500",
   },
+  {
+    slug: "ai-ml",
+    label: "AI / ML",
+    labelSi: "කෘතිම බුද්ධිය",
+    description: "Artificial Intelligence සහ Machine Learning සිංහලෙන්",
+    icon: "🤖",
+    color: "bg-violet-600",
+    textColor: "text-white",
+    borderColor: "border-violet-500",
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -63,11 +74,13 @@ export const CATEGORIES: CategoryInfo[] = [
 import * as github01 from "./post/github/01";
 import * as github02 from "./post/github/02";
 import * as azure01 from "./post/azure/01";
+import * as aiml01 from "./post/ai-ml/01";
 
 const ALL_POSTS: Article[] = [
   { meta: github01.meta as ArticleMeta, content: github01.content },
   { meta: github02.meta as ArticleMeta, content: github02.content },
   { meta: azure01.meta as ArticleMeta, content: azure01.content },
+  { meta: aiml01.meta as ArticleMeta, content: aiml01.content },
 ];
 
 // Sorted newest-first
