@@ -41,8 +41,26 @@ export default async function ArticlePage({ params }: Props) {
   const { meta, content } = article;
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-16">
-      <div className="mx-auto max-w-2xl">
+    <main className="relative min-h-screen bg-slate-50 px-4 py-16">
+
+      {/* Fixed background cover image at 40% opacity */}
+      {meta.coverImage && (
+        <div className="pointer-events-none fixed inset-0 z-0">
+          <Image
+            src={meta.coverImage}
+            alt=""
+            fill
+            className="object-cover"
+            style={{ opacity: 0.4 }}
+            unoptimized
+            priority
+          />
+          {/* Soft overlay so text stays readable */}
+          <div className="absolute inset-0 bg-slate-50/60" />
+        </div>
+      )}
+
+      <div className="relative z-10 mx-auto max-w-2xl">
 
         {/* Back */}
         <Link
@@ -90,21 +108,6 @@ export default async function ArticlePage({ params }: Props) {
           <p className="rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm text-indigo-700 leading-relaxed">
             {meta.description}
           </p>
-
-          {/* Cover image */}
-          {meta.coverImage && (
-            <div className="overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
-              <Image
-                src={meta.coverImage}
-                alt={meta.titleEn}
-                width={800}
-                height={450}
-                className="w-full object-cover"
-                unoptimized
-                priority
-              />
-            </div>
-          )}
         </header>
 
         {/* Divider */}
