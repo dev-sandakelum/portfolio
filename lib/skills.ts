@@ -5,6 +5,14 @@
  * Downloadable files live in public/download/{category}/{slug}/
  */
 
+export type SkillDownload = {
+  file: string;       // path relative to /public
+  label: string;
+  filename: string;   // suggested save filename (with extension)
+  fileType: string;   // display label e.g. "PDF", "SKILL"
+  fileSize?: string;
+};
+
 export type SkillMeta = {
   slug: string;
   category: string;
@@ -14,9 +22,12 @@ export type SkillMeta = {
   descriptionSi: string;
   date: string;
   tags: string[];
-  coverImage?: string;       // /public/download/{category}/{slug}/cover.*
-  downloadFile?: string;     // /public/download/{category}/{slug}/file.*
-  downloadLabel: string;
+  coverImage?: string;
+  /** Multiple downloadable files */
+  downloads?: SkillDownload[];
+  /** Legacy single-file fields — kept for backward compat */
+  downloadFile?: string;
+  downloadLabel?: string;
   fileSize?: string;
   fileType?: string;
 };

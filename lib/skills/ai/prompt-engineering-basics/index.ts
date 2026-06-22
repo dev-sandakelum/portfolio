@@ -8,10 +8,23 @@ export const meta = {
   date: "2025-06-20",
   tags: ["prompt-engineering", "ai", "chatgpt", "beginners"],
   coverImage: "/download/ai/prompt-engineering-basics/cover.png",
-  downloadFile: "/download/ai/prompt-engineering-basics/prompt-engineering-basics.pdf",
-  downloadLabel: "Download Skill Sheet (PDF)",
-  fileSize: "1.2 MB",
-  fileType: "PDF",
+  downloads: [
+    {
+      file: "/download/ai/prompt-engineering-basics/pdf-academic-doc-by-HS.skill",
+      label: "Academic Document Template (by HS)",
+      filename: "pdf-academic-doc-by-HS.skill",
+      fileType: "SKILL",
+      fileSize: "",
+    },
+    {
+      file: "/download/ai/prompt-engineering-basics/project-report.skill",
+      label: "Project Report Skill Template",
+      filename: "project-report.skill",
+      fileType: "SKILL",
+      fileSize: "",
+    },
+  ],
+  downloadLabel: "Download Skill Files",
 };
 
 export const content = `

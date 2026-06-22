@@ -102,11 +102,33 @@ export default async function SkillPage({ params }: Props) {
           )}
         </header>
 
-        {/* ── Download card ── */}
-        {meta.downloadFile && (
+        {/* ── Download cards ── */}
+        {(meta.downloads && meta.downloads.length > 0) ? (
+          <div className="my-8 space-y-3">
+            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">
+              Download Files
+            </p>
+            {meta.downloads.map((dl) => (
+              <div key={dl.file} className="flex items-center justify-between gap-4 rounded-2xl border border-violet-200 bg-white px-5 py-4 shadow-sm">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-violet-600 text-xs font-bold text-white">
+                    {dl.fileType}
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-800">{dl.label}</p>
+                    <p className="text-xs text-slate-400">
+                      {dl.fileType}
+                      {dl.fileSize && <span> · {dl.fileSize}</span>}
+                    </p>
+                  </div>
+                </div>
+                <DownloadButton href={dl.file} filename={dl.filename} />
+              </div>
+            ))}
+          </div>
+        ) : meta.downloadFile ? (
           <div className="my-8 flex items-center justify-between gap-4 rounded-2xl border border-violet-200 bg-white px-5 py-4 shadow-sm">
             <div className="flex items-center gap-3">
-              {/* File type icon */}
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-violet-600 text-sm font-bold text-white">
                 {meta.fileType ?? "FILE"}
               </span>
@@ -118,9 +140,9 @@ export default async function SkillPage({ params }: Props) {
                 </p>
               </div>
             </div>
-            <DownloadButton href={meta.downloadFile} filename={`${meta.slug}.${meta.fileType?.toLowerCase() ?? "pdf"}`} />
+            <DownloadButton href={meta.downloadFile} filename={`${meta.slug}.${meta.fileType?.toLowerCase() ?? "file"}`} />
           </div>
-        )}
+        ) : null}
 
         <div className="my-8 border-t border-slate-200" />
 
@@ -130,21 +152,27 @@ export default async function SkillPage({ params }: Props) {
         <div className="my-10 border-t border-slate-200" />
 
         {/* Bottom download CTA */}
-        {meta.downloadFile && (
-          <div className="rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 to-white px-6 py-6 text-center shadow-sm space-y-3">
-            <p className="text-sm font-semibold text-slate-700">
-              Skill sheet ready to download! 🎉
-            </p>
+        {(meta.downloads && meta.downloads.length > 0) ? (
+          <div className="rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 to-white px-6 py-6 text-center shadow-sm space-y-4">
+            <p className="text-sm font-semibold text-slate-700">Skill files ready to download! 🎉</p>
             <p className="text-xs text-slate-400">
-               මෙම skill sheet ඔබේ device ට save කර ඕනෑ වෙලේ reference කරගන්න.
+              මෙම skill files ඔබේ device ට save කර ඕනෑ වෙලේ reference කරගන්න.
             </p>
-            <DownloadButton
-              href={meta.downloadFile}
-              filename={`${meta.slug}.${meta.fileType?.toLowerCase() ?? "pdf"}`}
-              large
-            />
+            <div className="flex flex-wrap justify-center gap-3">
+              {meta.downloads.map((dl) => (
+                <DownloadButton key={dl.file} href={dl.file} filename={dl.filename} large />
+              ))}
+            </div>
           </div>
-        )}
+        ) : meta.downloadFile ? (
+          <div className="rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 to-white px-6 py-6 text-center shadow-sm space-y-3">
+            <p className="text-sm font-semibold text-slate-700">Skill sheet ready to download! 🎉</p>
+            <p className="text-xs text-slate-400">
+              මෙම skill sheet ඔබේ device ට save කර ඕනෑ වෙලේ reference කරගන්න.
+            </p>
+            <DownloadButton href={meta.downloadFile} filename={`${meta.slug}.${meta.fileType?.toLowerCase() ?? "file"}`} large />
+          </div>
+        ) : null}
 
         <div className="my-10 border-t border-slate-200" />
 
