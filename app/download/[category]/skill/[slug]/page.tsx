@@ -109,14 +109,17 @@ export default async function SkillPage({ params }: Props) {
               Download Files
             </p>
             {meta.downloads.map((dl) => (
-              <div key={dl.file} className="flex items-center justify-between gap-4 rounded-2xl border border-violet-200 bg-white px-5 py-4 shadow-sm">
-                <div className="flex items-center gap-3">
+              <div key={dl.file} className="flex items-start justify-between gap-4 rounded-2xl border border-violet-200 bg-white px-5 py-4 shadow-sm">
+                <div className="flex items-start gap-3">
                   <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-violet-600 text-xs font-bold text-white">
                     {dl.fileType}
                   </span>
                   <div>
                     <p className="text-sm font-semibold text-slate-800">{dl.label}</p>
-                    <p className="text-xs text-slate-400">
+                    {dl.description && (
+                      <p className="mt-0.5 text-xs text-slate-500 leading-relaxed">{dl.description}</p>
+                    )}
+                    <p className="mt-0.5 text-xs text-slate-400">
                       {dl.fileType}
                       {dl.fileSize && <span> · {dl.fileSize}</span>}
                     </p>

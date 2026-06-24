@@ -1,16 +1,24 @@
 /**
  * Skills system
- * Skill files live in lib/skills/{category}/{slug}/index.ts
- * Each exports `meta` and `content` (markdown string).
- * Downloadable files live in public/download/{category}/{slug}/
+ *
+ * File layout:
+ *   lib/skills/{category}/{slug}/index.ts   ← metadata + markdown content
+ *   lib/skills/{category}/{slug}/*.skill    ← source skill files (for reference)
+ *   public/download/{category}/{slug}/*     ← files served as static downloads
+ *
+ * To add a new skill:
+ *   1. Create lib/skills/{category}/{slug}/index.ts
+ *   2. Copy downloadable files to public/download/{category}/{slug}/
+ *   3. Import and register below
  */
 
 export type SkillDownload = {
-  file: string;       // path relative to /public
-  label: string;
-  filename: string;   // suggested save filename (with extension)
-  fileType: string;   // display label e.g. "PDF", "SKILL"
-  fileSize?: string;
+  file: string;         // URL path from /public (e.g. /download/ai/slug/file.skill)
+  label: string;        // Display name on the download button
+  filename: string;     // Suggested save filename with extension
+  fileType: string;     // Short type label shown in badge e.g. "SKILL", "PDF"
+  fileSize?: string;    // Optional e.g. "1.2 MB"
+  description?: string; // Optional one-liner shown under the label
 };
 
 export type SkillMeta = {
@@ -23,7 +31,6 @@ export type SkillMeta = {
   date: string;
   tags: string[];
   coverImage?: string;
-  /** Multiple downloadable files */
   downloads?: SkillDownload[];
   /** Legacy single-file fields — kept for backward compat */
   downloadFile?: string;
@@ -48,14 +55,14 @@ export type SkillCategoryInfo = {
 };
 
 // ---------------------------------------------------------------------------
-// Category registry
+// Category registry — add new categories here
 // ---------------------------------------------------------------------------
 export const SKILL_CATEGORIES: SkillCategoryInfo[] = [
   {
     slug: "ai",
     label: "AI Skills",
     labelSi: "AI දක්ෂතා",
-    description: "Practical AI skill sheets — prompt engineering, tools, workflows",
+    description: "Practical AI skill files — document generation, automation, workflows",
     icon: "🤖",
     color: "bg-violet-600",
     textColor: "text-white",
@@ -63,20 +70,23 @@ export const SKILL_CATEGORIES: SkillCategoryInfo[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Skill registry — static imports
+// Skill registry — one static import per skill file
 // ---------------------------------------------------------------------------
-import * as aiPromptEng from "./skills/ai/prompt-engineering-basics";
+import * as aiAcademicNote   from "./skills/ai/ai-academic-note";
+import * as aiProjectReport  from "./skills/ai/ai-project-report";
 
 const ALL_SKILLS: Skill[] = [
-  { meta: aiPromptEng.meta as SkillMeta, content: aiPromptEng.content },
+  { meta: aiAcademicNote.meta  as SkillMeta, content: aiAcademicNote.content  },
+  { meta: aiProjectReport.meta as SkillMeta, content: aiProjectReport.content },
 ];
 
+// Newest-first
 const SORTED_SKILLS = [...ALL_SKILLS].sort(
   (a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime()
 );
 
 // ---------------------------------------------------------------------------
-// Helpers
+// Public helpers
 // ---------------------------------------------------------------------------
 export function getAllSkills(): Skill[] {
   return SORTED_SKILLS;
