@@ -1,11 +1,34 @@
+import Image from "next/image";
 import Eyebrow from "./Eyebrow";
 
-interface CommunityItem { icon: string; name: string }
+interface CommunityItem {
+  imageSrc: string;
+  imageAlt: string;
+  name: string;
+  sub?: string;
+  /** Use gradient background for image container (for logos that need it) */
+  gradientBg?: boolean;
+}
 
 const COMMUNITIES: CommunityItem[] = [
-  { icon: "🧑‍💻", name: "Microsoft Learn\nStudent Ambassador" },
-  { icon: "🐙",   name: "GitHub\nCommunity" },
-  { icon: "🏛️",  name: "Faculty of Technology\nCommunity" },
+  {
+    imageSrc: "/portfolio/msLearn/LevelAlpha.png",
+    imageAlt: "Microsoft Learn Student Ambassador – Level Alpha badge",
+    name: "Microsoft Learn\nStudent Ambassador",
+    sub: "Level Alpha",
+  },
+  {
+    imageSrc: "/link/img/github.png",
+    imageAlt: "GitHub logo",
+    name: "GitHub\nCommunity",
+    gradientBg: true,
+  },
+  {
+    imageSrc: "/portfolio/msLearn/LevelAlpha.png", // placeholder — swap if you have a faculty logo
+    imageAlt: "Faculty of Technology, University of Ruhuna",
+    name: "Faculty of Technology\nUniversity of Ruhuna",
+    sub: "9th Batch",
+  },
 ];
 
 export default function Community() {
@@ -31,19 +54,46 @@ export default function Community() {
               className="reveal flex flex-col items-center rounded-2xl border p-8 text-center"
               style={{ background: "var(--surface)", borderColor: "var(--border)" }}
             >
+              {/* Image icon */}
               <div
-                className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl text-2xl"
-                style={{ background: "var(--gradient)" }}
-                aria-hidden="true"
+                className={`relative mb-5 h-16 w-16 overflow-hidden rounded-xl ${
+                  item.gradientBg ? "p-2" : ""
+                }`}
+                style={
+                  item.gradientBg
+                    ? { background: "var(--gradient)" }
+                    : undefined
+                }
               >
-                {item.icon}
+                <Image
+                  src={item.imageSrc}
+                  alt={item.imageAlt}
+                  fill
+                  className="object-contain"
+                  sizes="64px"
+                />
               </div>
+
               <div
                 className="text-[14.5px] font-semibold leading-snug"
                 style={{ whiteSpace: "pre-line" }}
               >
                 {item.name}
               </div>
+
+              {item.sub && (
+                <span
+                  className="mt-2 rounded-full border px-3 py-0.5 text-xs"
+                  style={{
+                    fontFamily: "var(--font-jetbrains-mono)",
+                    color: "var(--blue)",
+                    borderColor: "var(--blue)",
+                    background: "rgba(73,146,234,0.08)",
+                  }}
+                >
+                  {item.sub}
+                </span>
+              )}
             </div>
           ))}
         </div>

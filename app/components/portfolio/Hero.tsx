@@ -59,7 +59,7 @@ export default function Hero() {
             fontSize: "clamp(1rem, 2.2vw, 1.25rem)",
           }}
         >
-          21-year-old developer from Sri Lanka, studying towards a{" "}
+          {new Date().getFullYear() - 2005}-year-old developer from Sri Lanka, studying towards a{" "}
           <span className="grad-text font-semibold">Bachelor of ICT</span>{" "}
           and building products at the intersection of{" "}
           <span className="grad-text font-semibold">code and design</span>.

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Eyebrow from "./Eyebrow";
 import HoverLink from "./ui/HoverLink";
 import Sparkle from "./Sparkle";
@@ -66,7 +67,39 @@ export default function ContactFooter() {
                 transform: "translateY(-2px)",
               }}
             >
+              <Image
+                src="/link/img/github.png"
+                alt="GitHub"
+                width={18}
+                height={18}
+                className="object-contain opacity-90"
+              />
               GitHub ↗
+            </HoverLink>
+
+            <HoverLink
+              href="https://linkedin.com/in/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border px-7 py-3 text-sm font-semibold"
+              style={{
+                background: "var(--surface)",
+                borderColor: "var(--border)",
+                color: "var(--text)",
+              }}
+              hoverStyle={{
+                background: "var(--surface-hover)",
+                transform: "translateY(-2px)",
+              }}
+            >
+              <Image
+                src="/link/img/linkedin.png"
+                alt="LinkedIn"
+                width={18}
+                height={18}
+                className="object-contain"
+              />
+              LinkedIn ↗
             </HoverLink>
           </div>
         </div>

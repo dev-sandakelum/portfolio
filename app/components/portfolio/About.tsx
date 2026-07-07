@@ -1,8 +1,10 @@
+import Image from "next/image";
 import Eyebrow from "./Eyebrow";
+
 
 const INFO_ROWS = [
   { label: "NAME",        value: "Hasitha Sandakelum" },
-  { label: "AGE",         value: "21" },
+  { label: "AGE",         value: String(new Date().getFullYear() - 2005) },
   { label: "NATIONALITY", value: "Sri Lankan" },
   { label: "LOCATION",    value: "Sri Lanka" },
   { label: "ROLE",        value: "MLSA" },
@@ -79,9 +81,24 @@ export default function About() {
                 >
                   {row.label}
                 </span>
-                <span className="font-medium" style={{ color: "var(--text)" }}>
-                  {row.value}
-                </span>
+
+                {/* MLSA row gets the real badge */}
+                {row.label === "ROLE" ? (
+                  <span className="flex items-center gap-2 font-medium" style={{ color: "var(--text)" }}>
+                    <Image
+                      src="/portfolio/msLearn/LevelAlpha.png"
+                      alt="MLSA Level Alpha badge"
+                      width={22}
+                      height={22}
+                      className="object-contain"
+                    />
+                    {row.value}
+                  </span>
+                ) : (
+                  <span className="font-medium" style={{ color: "var(--text)" }}>
+                    {row.value}
+                  </span>
+                )}
               </div>
             ))}
           </div>
