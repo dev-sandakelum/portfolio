@@ -1,24 +1,49 @@
 import Image from "next/image";
 import Eyebrow from "./Eyebrow";
 import HoverLink from "./ui/HoverLink";
-import Sparkle from "./Sparkle";
+import ContactThemeSync from "./ContactThemeSync";
 
 export default function ContactFooter() {
   return (
-    <section className="snap-section-last" id="contact">
+    <section
+      className="snap-section-last relative overflow-hidden"
+      id="contact"
+      style={{ justifyContent: "center" }}
+    >
+      {/* ── Observes visibility and flips data-theme on <html> ── */}
+      <ContactThemeSync />
+
+      {/* ── Full-screen background image, no overlay ── */}
+      <div
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          backgroundImage: "url('/portfolio/contact_bg.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+        aria-hidden="true"
+      />
+
       {/* Contact card */}
       <div className="section-inner flex flex-1 items-center justify-center">
         <div
-          className="reveal relative w-full max-w-[600px] overflow-hidden rounded-3xl border p-10 text-center sm:p-14"
-          style={{ background: "var(--surface)", borderColor: "var(--border)" }}
+          className="reveal relative w-full max-w-[600px] overflow-hidden rounded-3xl p-10 text-center sm:p-14"
+          style={{
+            // background: "rgba(220,209,247,0.22)",
+            // borderColor: "rgba(134,103,194,0.3)",
+            // backdropFilter: "blur(2px)",
+            // WebkitBackdropFilter: "blur(2px)",
+            transform:"translate(120px , 40px)",
+          }}
         >
           {/* Radial glow */}
           <div
             className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(circle at 50% 0%, rgba(156,106,222,0.2), transparent 65%)",
-            }}
+            // style={{
+            //   background:
+            //     "radial-gradient(circle at 50% 0%, rgba(229,115,171,0.25), transparent 65%)",
+            // }}
             aria-hidden="true"
           />
 
@@ -30,23 +55,30 @@ export default function ContactFooter() {
               fontFamily: "var(--font-space-grotesk)",
               fontWeight: 600,
               fontSize: "clamp(1.6rem, 3.5vw, 2.3rem)",
+              color: "#1a1030",
             }}
           >
             Let&apos;s build something
           </h2>
-          <p className="mx-auto mb-8 max-w-sm text-base" style={{ color: "var(--text-dim)" }}>
-            Open to internships, collaborations, and community projects. Reach out through GitHub
-            or email.
+          <p
+            className="mx-auto mb-8 max-w-sm text-base"
+            style={{ color: "#4A3B80" }}
+          >
+            Open to internships, collaborations, and community projects. Reach
+            out through GitHub or email.
           </p>
 
           <div className="flex flex-wrap justify-center gap-4">
             <HoverLink
               href="mailto:your.email@example.com"
               className="inline-flex items-center gap-2 rounded-full px-7 py-3 text-sm font-semibold"
-              style={{ background: "var(--gradient)", color: "#08090d" }}
+              style={{
+                background: "linear-gradient(120deg,#8667C2 0%,#E573AB 100%)",
+                color: "#fff",
+              }}
               hoverStyle={{
                 transform: "translateY(-2px)",
-                boxShadow: "0 12px 32px -8px rgba(156,106,222,0.55)",
+                boxShadow: "0 12px 32px -8px rgba(229,115,171,0.6)",
               }}
             >
               Email me
@@ -58,12 +90,12 @@ export default function ContactFooter() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full border px-7 py-3 text-sm font-semibold"
               style={{
-                background: "var(--surface)",
-                borderColor: "var(--border)",
-                color: "var(--text)",
+                background: "rgba(220,209,247,0.35)",
+                borderColor: "rgba(134,103,194,0.4)",
+                color: "#1a1030",
               }}
               hoverStyle={{
-                background: "var(--surface-hover)",
+                background: "rgba(220,209,247,0.55)",
                 transform: "translateY(-2px)",
               }}
             >
@@ -83,12 +115,12 @@ export default function ContactFooter() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full border px-7 py-3 text-sm font-semibold"
               style={{
-                background: "var(--surface)",
-                borderColor: "var(--border)",
-                color: "var(--text)",
+                background: "rgba(220,209,247,0.35)",
+                borderColor: "rgba(134,103,194,0.4)",
+                color: "#1a1030",
               }}
               hoverStyle={{
-                background: "var(--surface-hover)",
+                background: "rgba(220,209,247,0.55)",
                 transform: "translateY(-2px)",
               }}
             >
@@ -104,19 +136,6 @@ export default function ContactFooter() {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer
-        className="w-full border-t py-6 text-center text-sm"
-        style={{
-          fontFamily: "var(--font-jetbrains-mono)",
-          color: "var(--text-faint)",
-          borderColor: "var(--border)",
-        }}
-      >
-        <Sparkle size={11} style={{ verticalAlign: "-1px", marginRight: 6 }} />
-        Hasitha Sandakelum · Built with care in Sri Lanka
-      </footer>
     </section>
   );
 }
