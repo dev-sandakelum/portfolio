@@ -1,32 +1,37 @@
 "use client";
 
 /**
- * ArticleBody — renders a lightweight Markdown-like string into styled HTML.
+ * ArticleBody — renders markdown-like content in the portfolio dark theme.
  *
  * Supported syntax:
- *   ## Heading 2      → <h2>
- *   ### Heading 3     → <h3>
- *   #### Heading 4    → <h4>
- *   **bold**          → <strong>
- *   _italic_          → <em>
- *   `inline code`     → <code>
- *   ```lang ... ```   → <pre><code>
- *   > blockquote      → <blockquote>
- *   - item            → <ul><li>
- *   | a | b |         → <table>
- *   blank line        → paragraph break
+ *   ## ## ### ####  headings
+ *   **bold**   _italic_   `inline code`   [label](url)
+ *   ```lang … ```   fenced code blocks
+ *   > blockquote
+ *   - / * unordered list,  1. ordered list
+ *   | table |
+ *   ---  horizontal rule
  *
- * All text is rendered in a font that has excellent Sinhala Unicode support
- * (Noto Sans Sinhala via Google Fonts).
+ * Sinhala Unicode is rendered via Noto Sans Sinhala.
  */
 
-import { useMemo, ReactNode } from "react";
+import { useMemo, ReactNode, CSSProperties } from "react";
 
-// ──────────────────────────────────────────────────────────────────────────────
-// Inline parser: bold, italic, inline-code
-// ──────────────────────────────────────────────────────────────────────────────
+// ─── CSS variable shorthands ──────────────────────────────────────────────────
+const S = {
+  text:     "var(--text)",
+  dim:      "var(--text-dim)",
+  faint:    "var(--text-faint)",
+  border:   "var(--border)",
+  surface:  "var(--surface)",
+  blue:     "var(--blue)",
+  gradient: "var(--gradient)",
+  mono:     "var(--font-jetbrains-mono)",
+  display:  "var(--font-space-grotesk)",
+};
+
+// ─── Inline parser ────────────────────────────────────────────────────────────
 function parseInline(text: string): ReactNode {
-  // Split on **bold**, _italic_, `code`, [label](url)
   const parts: ReactNode[] = [];
   const regex = /(\*\*(.+?)\*\*|`(.+?)`|_(.+?)_|\[([^\]]+)\]\(([^)]+)\))/g;
   let last = 0;
@@ -36,20 +41,34 @@ function parseInline(text: string): ReactNode {
     if (match.index > last) parts.push(text.slice(last, match.index));
 
     if (match[2] !== undefined) {
-      // **bold**
-      parts.push(<strong key={match.index} className="font-semibold text-slate-900">{match[2]}</strong>);
-    } else if (match[3] !== undefined) {
-      // `code`
       parts.push(
-        <code key={match.index} className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[0.85em] text-slate-700">
+        <strong key={match.index} style={{ fontWeight: 600, color: S.text }}>
+          {match[2]}
+        </strong>
+      );
+    } else if (match[3] !== undefined) {
+      parts.push(
+        <code
+          key={match.index}
+          style={{
+            borderRadius: 6,
+            background: "rgba(255,255,255,0.08)",
+            padding: "1px 7px",
+            fontFamily: S.mono,
+            fontSize: "0.85em",
+            color: "var(--blue)",
+          }}
+        >
           {match[3]}
         </code>
       );
     } else if (match[4] !== undefined) {
-      // _italic_
-      parts.push(<em key={match.index} className="italic text-slate-700">{match[4]}</em>);
+      parts.push(
+        <em key={match.index} style={{ fontStyle: "italic", color: S.dim }}>
+          {match[4]}
+        </em>
+      );
     } else if (match[5] !== undefined && match[6] !== undefined) {
-      // [label](url)
       const href = match[6];
       const isInternal = href.startsWith("/");
       parts.push(
@@ -57,7 +76,12 @@ function parseInline(text: string): ReactNode {
           key={match.index}
           href={href}
           {...(!isInternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-          className="font-medium text-indigo-600 underline underline-offset-2 transition hover:text-indigo-800"
+          style={{
+            color: S.blue,
+            textDecoration: "underline",
+            textUnderlineOffset: 3,
+            fontWeight: 500,
+          }}
         >
           {match[5]}
         </a>
@@ -69,15 +93,12 @@ function parseInline(text: string): ReactNode {
   return parts.length === 1 ? parts[0] : <>{parts}</>;
 }
 
-// ──────────────────────────────────────────────────────────────────────────────
-// Block parser
-// ──────────────────────────────────────────────────────────────────────────────
+// ─── Block parser ──────────────────────────────────────────────────────────────
 function parseBlocks(content: string): ReactNode[] {
   const lines = content.replace(/\r\n/g, "\n").split("\n");
   const nodes: ReactNode[] = [];
   let i = 0;
   let key = 0;
-
   const next = () => key++;
 
   while (i < lines.length) {
@@ -92,21 +113,46 @@ function parseBlocks(content: string): ReactNode[] {
         codeLines.push(lines[i]);
         i++;
       }
-      i++; // consume closing ```
+      i++;
       nodes.push(
-        <div key={next()} className="my-5 overflow-hidden rounded-xl border border-slate-200 bg-slate-900 shadow-sm">
+        <div
+          key={next()}
+          style={{
+            margin: "20px 0",
+            borderRadius: 14,
+            overflow: "hidden",
+            border: "1px solid rgba(255,255,255,0.1)",
+            background: "#0d0f16",
+          }}
+        >
           {lang !== "text" && (
-            <div className="flex items-center justify-between border-b border-slate-700 px-4 py-2">
-              <span className="text-xs font-mono text-slate-400">{lang}</span>
-              <div className="flex gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-red-500/60" />
-                <span className="h-2.5 w-2.5 rounded-full bg-yellow-500/60" />
-                <span className="h-2.5 w-2.5 rounded-full bg-green-500/60" />
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "8px 16px",
+                borderBottom: "1px solid rgba(255,255,255,0.08)",
+              }}
+            >
+              <span style={{ fontFamily: S.mono, fontSize: 12, color: S.faint }}>{lang}</span>
+              <div style={{ display: "flex", gap: 6 }}>
+                <span style={{ width: 10, height: 10, borderRadius: "50%", background: "rgba(232,83,93,0.5)" }} />
+                <span style={{ width: 10, height: 10, borderRadius: "50%", background: "rgba(219,184,45,0.5)" }} />
+                <span style={{ width: 10, height: 10, borderRadius: "50%", background: "rgba(132,179,129,0.5)" }} />
               </div>
             </div>
           )}
-          <pre className="overflow-x-auto px-5 py-4 text-sm leading-relaxed text-slate-200">
-            <code className="font-mono">{codeLines.join("\n")}</code>
+          <pre
+            style={{
+              overflowX: "auto",
+              padding: "18px 20px",
+              margin: 0,
+              fontSize: 13.5,
+              lineHeight: 1.65,
+            }}
+          >
+            <code style={{ fontFamily: S.mono, color: "#c9d1d9" }}>{codeLines.join("\n")}</code>
           </pre>
         </div>
       );
@@ -121,8 +167,20 @@ function parseBlocks(content: string): ReactNode[] {
         i++;
       }
       nodes.push(
-        <blockquote key={next()} className="my-4 border-l-4 border-indigo-300 bg-indigo-50 px-4 py-3 text-sm text-indigo-800 leading-relaxed rounded-r-xl">
-          {bqLines.map((l, idx) => <p key={idx}>{parseInline(l)}</p>)}
+        <blockquote
+          key={next()}
+          style={{
+            margin: "16px 0",
+            borderLeft: `4px solid var(--blue)`,
+            background: "rgba(73,146,234,0.07)",
+            padding: "12px 16px",
+            borderRadius: "0 12px 12px 0",
+            fontSize: 14,
+            color: S.dim,
+            lineHeight: 1.8,
+          }}
+        >
+          {bqLines.map((l, idx) => <p key={idx} style={{ margin: "4px 0" }}>{parseInline(l)}</p>)}
         </blockquote>
       );
       continue;
@@ -136,9 +194,9 @@ function parseBlocks(content: string): ReactNode[] {
         i++;
       }
       nodes.push(
-        <ul key={next()} className="my-4 space-y-1.5 pl-5 text-slate-700">
+        <ul key={next()} style={{ margin: "14px 0", paddingLeft: 22, color: S.dim }}>
           {items.map((item, idx) => (
-            <li key={idx} className="list-disc text-[0.95rem] leading-relaxed">
+            <li key={idx} style={{ listStyle: "disc", marginBottom: 6, lineHeight: 1.75, fontSize: "0.97rem" }}>
               {parseInline(item)}
             </li>
           ))}
@@ -147,7 +205,7 @@ function parseBlocks(content: string): ReactNode[] {
       continue;
     }
 
-    // ── ordered list ─────────────────────────────────────────────────────────
+    // ── ordered list ──────────────────────────────────────────────────────────
     if (/^\d+\. /.test(line)) {
       const items: string[] = [];
       while (i < lines.length && /^\d+\. /.test(lines[i])) {
@@ -155,9 +213,9 @@ function parseBlocks(content: string): ReactNode[] {
         i++;
       }
       nodes.push(
-        <ol key={next()} className="my-4 space-y-1.5 pl-5 text-slate-700">
+        <ol key={next()} style={{ margin: "14px 0", paddingLeft: 22, color: S.dim }}>
           {items.map((item, idx) => (
-            <li key={idx} className="list-decimal text-[0.95rem] leading-relaxed">
+            <li key={idx} style={{ listStyle: "decimal", marginBottom: 6, lineHeight: 1.75, fontSize: "0.97rem" }}>
               {parseInline(item)}
             </li>
           ))}
@@ -176,32 +234,42 @@ function parseBlocks(content: string): ReactNode[] {
       const rows = tableLines
         .filter((l) => !l.replace(/\|/g, "").trim().match(/^[-: ]+$/))
         .map((l) =>
-          l
-            .trim()
-            .replace(/^\|/, "")
-            .replace(/\|$/, "")
-            .split("|")
-            .map((c) => c.trim())
+          l.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((c) => c.trim())
         );
       if (rows.length > 0) {
         const [head, ...body] = rows;
         nodes.push(
-          <div key={next()} className="my-5 overflow-x-auto rounded-xl border border-slate-200">
-            <table className="min-w-full text-sm">
-              <thead className="bg-slate-100">
-                <tr>
+          <div key={next()} style={{ margin: "20px 0", overflowX: "auto", borderRadius: 12, border: "1px solid var(--border)" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13.5 }}>
+              <thead>
+                <tr style={{ background: "rgba(255,255,255,0.05)" }}>
                   {head.map((h, ci) => (
-                    <th key={ci} className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">
+                    <th
+                      key={ci}
+                      style={{
+                        padding: "10px 16px",
+                        textAlign: "left",
+                        fontSize: 11,
+                        fontFamily: S.mono,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.08em",
+                        color: S.faint,
+                        borderBottom: "1px solid var(--border)",
+                      }}
+                    >
                       {parseInline(h)}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 bg-white">
+              <tbody>
                 {body.map((row, ri) => (
-                  <tr key={ri} className="hover:bg-slate-50">
+                  <tr
+                    key={ri}
+                    style={{ borderBottom: ri < body.length - 1 ? "1px solid var(--border)" : "none" }}
+                  >
                     {row.map((cell, ci) => (
-                      <td key={ci} className="px-4 py-2.5 text-slate-700">
+                      <td key={ci} style={{ padding: "9px 16px", color: S.dim, lineHeight: 1.6 }}>
                         {parseInline(cell)}
                       </td>
                     ))}
@@ -216,9 +284,9 @@ function parseBlocks(content: string): ReactNode[] {
     }
 
     // ── horizontal rule ───────────────────────────────────────────────────────
-    if (line.trim() === "---" || line.trim() === "***" || line.trim() === "___") {
+    if (/^(-{3,}|\*{3,}|_{3,})$/.test(line.trim())) {
       nodes.push(
-        <hr key={next()} className="my-8 border-t border-slate-200" />
+        <hr key={next()} style={{ margin: "28px 0", border: "none", borderTop: "1px solid var(--border)" }} />
       );
       i++;
       continue;
@@ -227,56 +295,74 @@ function parseBlocks(content: string): ReactNode[] {
     // ── headings ──────────────────────────────────────────────────────────────
     if (line.startsWith("#### ")) {
       nodes.push(
-        <h4 key={next()} className="mt-6 mb-2 text-base font-semibold text-slate-800">
+        <h4 key={next()} style={{ marginTop: 20, marginBottom: 8, fontSize: 15, fontWeight: 600, color: S.text, fontFamily: S.display }}>
           {parseInline(line.slice(5))}
         </h4>
       );
-      i++;
-      continue;
+      i++; continue;
     }
     if (line.startsWith("### ")) {
       nodes.push(
-        <h3 key={next()} className="mt-8 mb-2 text-lg font-bold text-slate-800">
+        <h3 key={next()} style={{ marginTop: 28, marginBottom: 10, fontSize: 17, fontWeight: 700, color: S.text, fontFamily: S.display }}>
           {parseInline(line.slice(4))}
         </h3>
       );
-      i++;
-      continue;
+      i++; continue;
     }
     if (line.startsWith("## ")) {
       nodes.push(
-        <h2 key={next()} className="mt-10 mb-3 text-xl font-bold text-slate-900 border-b border-slate-100 pb-2">
+        <h2
+          key={next()}
+          style={{
+            marginTop: 36,
+            marginBottom: 12,
+            paddingBottom: 10,
+            fontSize: 20,
+            fontWeight: 700,
+            fontFamily: S.display,
+            background: S.gradient,
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            color: "transparent",
+            borderBottom: "1px solid var(--border)",
+          }}
+        >
           {parseInline(line.slice(3))}
         </h2>
       );
-      i++;
-      continue;
+      i++; continue;
     }
     if (line.startsWith("# ")) {
       nodes.push(
-        <h1 key={next()} className="mt-8 mb-3 text-2xl font-bold text-slate-900">
+        <h1 key={next()} style={{ marginTop: 28, marginBottom: 12, fontSize: 24, fontWeight: 700, color: S.text, fontFamily: S.display }}>
           {parseInline(line.slice(2))}
         </h1>
       );
-      i++;
-      continue;
+      i++; continue;
     }
 
-    // ── blank line → skip ─────────────────────────────────────────────────────
-    if (line.trim() === "") {
-      i++;
-      continue;
-    }
+    // ── blank line ────────────────────────────────────────────────────────────
+    if (line.trim() === "") { i++; continue; }
 
     // ── paragraph ─────────────────────────────────────────────────────────────
     const paraLines: string[] = [];
-    while (i < lines.length && lines[i].trim() !== "" && !lines[i].startsWith("#") && !lines[i].startsWith("```") && !lines[i].startsWith("> ") && !/^[-*] /.test(lines[i]) && !/^\d+\. /.test(lines[i]) && !lines[i].trim().startsWith("|")) {
+    while (
+      i < lines.length &&
+      lines[i].trim() !== "" &&
+      !lines[i].startsWith("#") &&
+      !lines[i].startsWith("```") &&
+      !lines[i].startsWith("> ") &&
+      !/^[-*] /.test(lines[i]) &&
+      !/^\d+\. /.test(lines[i]) &&
+      !lines[i].trim().startsWith("|") &&
+      !/^(-{3,}|\*{3,}|_{3,})$/.test(lines[i].trim())
+    ) {
       paraLines.push(lines[i]);
       i++;
     }
     if (paraLines.length > 0) {
       nodes.push(
-        <p key={next()} className="my-3 text-[0.975rem] leading-[1.85] text-slate-700">
+        <p key={next()} style={{ margin: "12px 0", fontSize: "0.975rem", lineHeight: 1.85, color: S.dim }}>
           {parseInline(paraLines.join(" "))}
         </p>
       );
@@ -286,20 +372,18 @@ function parseBlocks(content: string): ReactNode[] {
   return nodes;
 }
 
-// ──────────────────────────────────────────────────────────────────────────────
-// Component
-// ──────────────────────────────────────────────────────────────────────────────
+// ─── Component ────────────────────────────────────────────────────────────────
 export function ArticleBody({ content }: { content: string }) {
   const nodes = useMemo(() => parseBlocks(content), [content]);
 
   return (
     <>
-      {/* Load Noto Sans Sinhala for proper Sinhala Unicode rendering */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wdth,wght@75..125,100..900&display=swap');
         .article-body {
-          font-family: 'Noto Sans Sinhala', 'Geist', ui-sans-serif, system-ui, sans-serif;
+          font-family: 'Noto Sans Sinhala', var(--font-inter, sans-serif);
         }
+        .article-body a:hover { opacity: 0.8; }
       `}</style>
       <article className="article-body">{nodes}</article>
     </>
