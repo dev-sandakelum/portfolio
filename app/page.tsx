@@ -1,11 +1,6 @@
 import OrbBackground from "./components/portfolio/OrbBackground";
 import PortfolioNav from "./components/portfolio/PortfolioNav";
 import Hero from "./components/portfolio/Hero";
-import About from "./components/portfolio/About";
-import Education from "./components/portfolio/Education";
-import Skills from "./components/portfolio/Skills";
-import Projects from "./components/portfolio/Projects";
-import Community from "./components/portfolio/Community";
 import ContactFooter from "./components/portfolio/ContactFooter";
 import RevealObserver from "./components/portfolio/RevealObserver";
 import ScrollDots from "./components/portfolio/ScrollDots";
@@ -29,11 +24,6 @@ export default function HomePage() {
         style={{ overflow: "hidden scroll" }}
       >
         <Hero />
-        <About />
-        <Education />
-        <Skills />
-        <Projects />
-        <Community />
         <ContactFooter />
       </main>
 
