@@ -1,13 +1,17 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 /**
  * Mounts an IntersectionObserver on #contact.
  * When ≥50% visible → sets data-theme="contact" on <html>.
  * When leaving      → removes it.
- * CSS transitions on :root vars handle the smooth colour shift.
+ *
+ * Also renders a fixed full-viewport bg image div (covers nav too)
+ * that fades in/out via CSS driven by [data-theme="contact"].
  */
 export default function ContactThemeSync() {
+  const bgRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const target = document.getElementById("contact");
     if (!target) return;
@@ -27,5 +31,11 @@ export default function ContactThemeSync() {
     return () => observer.disconnect();
   }, []);
 
-  return null;
+  return (
+    <div
+      ref={bgRef}
+      aria-hidden="true"
+      className="contact-bg-fixed"
+    />
+  );
 }

@@ -6,24 +6,12 @@ import ContactThemeSync from "./ContactThemeSync";
 export default function ContactFooter() {
   return (
     <section
-      className="snap-section-last relative overflow-hidden"
+      className="snap-section-last relative"
       id="contact"
       style={{ justifyContent: "center" }}
     >
-      {/* ── Observes visibility and flips data-theme on <html> ── */}
+      {/* ── Observes visibility, flips data-theme, renders fixed bg ── */}
       <ContactThemeSync />
-
-      {/* ── Full-screen background image, no overlay ── */}
-      <div
-        className="pointer-events-none absolute inset-0 -z-10"
-        style={{
-          backgroundImage: "url('/portfolio/contact_bg.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
-        aria-hidden="true"
-      />
 
       {/* Contact card */}
       <div className="section-inner flex flex-1 items-center justify-center">
@@ -34,7 +22,7 @@ export default function ContactFooter() {
             // borderColor: "rgba(134,103,194,0.3)",
             // backdropFilter: "blur(2px)",
             // WebkitBackdropFilter: "blur(2px)",
-            transform:"translate(120px , 40px)",
+            transform:"translate(120px , 20px)",
           }}
         >
           {/* Radial glow */}
