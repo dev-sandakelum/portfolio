@@ -2,19 +2,11 @@
 
 import { useEffect, useRef } from "react";
 
-const SECTION_IDS = [
-  "hero",
-  "about",
-  "education",
-  "skills",
-  "projects",
-  "community",
-  "contact",
-];
+const SECTION_IDS = ["hero", "contact"];
 
-// Ease in-out cubic
-function easeInOutCubic(t: number): number {
-  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+// Smoother ease: quintic ease-in-out
+function easeInOutQuint(t: number): number {
+  return t < 0.5 ? 16 * t * t * t * t * t : 1 - Math.pow(-2 * t + 2, 5) / 2;
 }
 
 function animateScroll(
@@ -24,13 +16,14 @@ function animateScroll(
   duration: number,
   onDone?: () => void
 ) {
+  // Cancel any in-flight animation
   const start = performance.now();
   const delta = to - from;
 
   function step(now: number) {
-    const elapsed = now - start;
+    const elapsed  = now - start;
     const progress = Math.min(elapsed / duration, 1);
-    container.scrollTop = from + delta * easeInOutCubic(progress);
+    container.scrollTop = from + delta * easeInOutQuint(progress);
     if (progress < 1) {
       requestAnimationFrame(step);
     } else {
@@ -42,14 +35,13 @@ function animateScroll(
 }
 
 export default function SmoothScroller() {
-  const isScrolling = useRef(false);
+  const isScrolling  = useRef(false);
   const currentIndex = useRef(0);
 
   useEffect(() => {
     const container = document.getElementById("snap-root");
     if (!container) return;
 
-    // Remove CSS snap so our JS takes full control
     container.style.scrollSnapType = "none";
 
     const getSections = () =>
@@ -60,10 +52,9 @@ export default function SmoothScroller() {
       if (index < 0 || index >= sections.length) return;
       if (isScrolling.current) return;
 
-      isScrolling.current = true;
+      isScrolling.current  = true;
       currentIndex.current = index;
 
-      // Dispatch custom event so ScrollDots can sync
       window.dispatchEvent(
         new CustomEvent("sectionchange", { detail: { id: SECTION_IDS[index] } })
       );
@@ -72,10 +63,8 @@ export default function SmoothScroller() {
         container,
         container.scrollTop,
         sections[index].offsetTop,
-        820,           // duration ms — tweak for feel
-        () => {
-          isScrolling.current = false;
-        }
+        1000,           // 1 s — smooth but not sluggish
+        () => { isScrolling.current = false; }
       );
     };
 
@@ -85,9 +74,7 @@ export default function SmoothScroller() {
       if (isScrolling.current) return;
 
       const sections = getSections();
-      // Find closest section by current scrollTop
-      let closest = 0;
-      let minDist = Infinity;
+      let closest = 0, minDist = Infinity;
       sections.forEach((s, i) => {
         const dist = Math.abs(s.offsetTop - container.scrollTop);
         if (dist < minDist) { minDist = dist; closest = i; }
@@ -103,16 +90,13 @@ export default function SmoothScroller() {
 
     // ── Touch ──────────────────────────────────────────
     let touchStartY = 0;
-    const onTouchStart = (e: TouchEvent) => {
-      touchStartY = e.touches[0].clientY;
-    };
-    const onTouchEnd = (e: TouchEvent) => {
+    const onTouchStart = (e: TouchEvent) => { touchStartY = e.touches[0].clientY; };
+    const onTouchEnd   = (e: TouchEvent) => {
       const delta = touchStartY - e.changedTouches[0].clientY;
-      if (Math.abs(delta) < 30) return; // ignore tiny swipes
+      if (Math.abs(delta) < 30) return;
 
       const sections = getSections();
-      let closest = 0;
-      let minDist = Infinity;
+      let closest = 0, minDist = Infinity;
       sections.forEach((s, i) => {
         const dist = Math.abs(s.offsetTop - container.scrollTop);
         if (dist < minDist) { minDist = dist; closest = i; }
@@ -142,18 +126,17 @@ export default function SmoothScroller() {
     // ── Expose goTo globally for ScrollDots ───────────
     (window as unknown as Record<string, unknown>).__portfolioGoTo = goTo;
 
-    container.addEventListener("wheel", onWheel, { passive: false });
+    container.addEventListener("wheel",      onWheel,      { passive: false });
     container.addEventListener("touchstart", onTouchStart, { passive: true });
-    container.addEventListener("touchend", onTouchEnd, { passive: true });
+    container.addEventListener("touchend",   onTouchEnd,   { passive: true });
     window.addEventListener("keydown", onKey);
 
-    // Snap on first load to hero
-    goTo(0);
+    goTo(0); // snap to hero on load
 
     return () => {
-      container.removeEventListener("wheel", onWheel);
+      container.removeEventListener("wheel",      onWheel);
       container.removeEventListener("touchstart", onTouchStart);
-      container.removeEventListener("touchend", onTouchEnd);
+      container.removeEventListener("touchend",   onTouchEnd);
       window.removeEventListener("keydown", onKey);
       delete (window as unknown as Record<string, unknown>).__portfolioGoTo;
     };
