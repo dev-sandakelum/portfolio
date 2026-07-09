@@ -2,65 +2,49 @@ import HoverLink from "./ui/HoverLink";
 import Sparkle from "./Sparkle";
 
 const NAV_LINKS = [
-  { href: "#about",     label: "About" },
-  { href: "#education", label: "Education" },
-  { href: "#skills",    label: "Skills" },
-  { href: "#projects",  label: "Projects" },
-  { href: "#community", label: "Community" },
+  { href: "#hero",    label: "Hero" },
+  { href: "#contact", label: "Contact" },
 ];
 
 export default function PortfolioNav() {
   return (
     <nav
-      className="flex items-center justify-between border-b px-6"
+      className="portfolio-nav flex items-center justify-between px-8"
       style={{
         height: "var(--nav-h)",
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
-        background: "rgba(8,9,13,0.75)",
-        borderColor: "var(--border)",
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
       }}
     >
-      {/* Brand */}
+      {/* ── Brand: ✦ Portfolio ── */}
       <div
-        className="flex items-center gap-2 text-[17px] font-semibold tracking-tight"
+        className="nav-brand flex items-center gap-2 text-[17px] font-bold tracking-tight"
         style={{ fontFamily: "var(--font-space-grotesk)" }}
       >
-        <Sparkle size={18} />
-        Hasitha
+        <Sparkle size={16} />
+        Portfolio
       </div>
 
-      {/* Desktop links */}
-      <div className="hidden items-center gap-8 md:flex">
+      {/* ── Centered nav links ── */}
+      <div className="hidden items-center gap-9 md:flex">
         {NAV_LINKS.map((link) => (
-          <HoverLink
+          <a
             key={link.href}
             href={link.href}
-            className="text-sm font-medium"
-            style={{ color: "var(--text-dim)" }}
-            hoverStyle={{ color: "var(--text)" }}
+            className="nav-link text-[14px] font-medium"
           >
             {link.label}
-          </HoverLink>
+          </a>
         ))}
       </div>
 
-      {/* CTA */}
-      <HoverLink
+      {/* ── CTA pill ── */}
+      <a
         href="#contact"
-        className="rounded-full border px-4 py-2 text-sm font-medium"
-        style={{
-          background: "var(--surface)",
-          borderColor: "var(--border)",
-          color: "var(--text)",
-        }}
-        hoverStyle={{
-          background: "var(--surface-hover)",
-          borderColor: "var(--blue)",
-        }}
+        className="nav-cta rounded-full px-5 py-2 text-[13.5px] font-semibold"
       >
         Get in touch
-      </HoverLink>
+      </a>
     </nav>
   );
 }
