@@ -275,6 +275,17 @@ body {
   transform: scale(1.6);
 }
 
+/* ── Contact section: fade-only reveal (no bottom-to-top slide) ── */
+#contact .reveal {
+  transform: none !important;
+  opacity: 0;
+  transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+#contact .reveal.in {
+  opacity: 1;
+  transform: none !important;
+}
+
 /* ── Contact card positioning ────────────────────── */
 /* Mobile: scale down all text inside contact section */
 @media (max-width: 767px) {
