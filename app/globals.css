@@ -273,6 +273,25 @@ body {
   transform: scale(1.6);
 }
 
+/* ── Contact card positioning ────────────────────── */
+/* Mobile: scale down all text inside contact section */
+@media (max-width: 767px) {
+  #contact h2 {
+    font-size: clamp(1.1rem, 5vw, 1.4rem) !important;
+  }
+  #contact p {
+    font-size: 0.78rem !important;
+    line-height: 1.55 !important;
+  }
+  #contact a, #contact button {
+    font-size: 0.72rem !important;
+    padding-top: 0.45rem !important;
+    padding-bottom: 0.45rem !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
+
 /* ── Contact fixed full-viewport background ──────── */
 .contact-bg-fixed {
   position: fixed;
