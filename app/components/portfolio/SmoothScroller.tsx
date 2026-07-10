@@ -70,6 +70,9 @@ export default function SmoothScroller() {
       };
       (window as unknown as Record<string, unknown>).__portfolioGoTo = goTo;
 
+      // Snap to hero on load
+      goTo(0);
+
       return () => {
         container.removeEventListener("scroll", onScroll);
         delete (window as unknown as Record<string, unknown>).__portfolioGoTo;
