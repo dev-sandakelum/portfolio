@@ -215,6 +215,47 @@ body {
 .reveal:nth-child(4) { transition-delay: 0.3s; }
 .reveal:nth-child(5) { transition-delay: 0.4s; }
 
+/* ── Scroll dots ─────────────────────────────────── */
+.scroll-dot {
+  display: block;
+  width: 6px;
+  height: 6px;
+  min-width: 6px;
+  min-height: 6px;
+  border-radius: 100px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  /* Inactive: matches --border in each theme */
+  background: var(--border);
+  box-shadow: none;
+  transform: scale(1);
+  transition:
+    width        0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    height       0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    background   0.7s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow   0.7s cubic-bezier(0.4, 0, 0.2, 1),
+    transform    0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Active dot — tall pill using site gradient */
+.scroll-dot[data-active="true"] {
+  width: 10px;
+  height: 26px;
+  background: var(--gradient);
+  box-shadow: 0 0 12px rgba(156, 106, 222, 0.55);
+}
+
+/* Contact theme: active glow matches orchid/violet palette */
+[data-theme="contact"] .scroll-dot[data-active="true"] {
+  box-shadow: 0 0 12px rgba(134, 103, 194, 0.65);
+}
+
+/* Hovered inactive dot */
+.scroll-dot[data-hovered="true"] {
+  transform: scale(1.6);
+}
+
 /* ── Contact fixed full-viewport background ──────── */
 .contact-bg-fixed {
   position: fixed;
@@ -227,6 +268,12 @@ body {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* Mobile: swap to portrait image */
+@media (max-width: 767px) {
+  .contact-bg-fixed {
+    background-image: url('/portfolio/contact_bg_mobile.png');
+  }
 }
 [data-theme="contact"] .contact-bg-fixed {
   opacity: 1;
