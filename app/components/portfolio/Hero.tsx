@@ -1,7 +1,8 @@
 import HoverLink from "./ui/HoverLink";
+import { PERSON, HERO } from "@/lib/portfolio/data";
 
 export default function Hero() {
-  const age = new Date().getFullYear() - 2005;
+  const age = new Date().getFullYear() - PERSON.birthYear;
 
   return (
     <section
@@ -12,20 +13,26 @@ export default function Hero() {
       {/* ── Dark base background ── */}
       <div className="absolute inset-0 z-0" style={{ background: "#0a0812" }} />
 
-      {/* ── Two-column grid ── */}
+      {/* ══════════════════════════════════════════════
+          DESKTOP: two-column side-by-side grid
+          MOBILE:  single column, text top / video bottom
+      ══════════════════════════════════════════════ */}
       <div
-        className="relative z-10 mx-auto grid w-full max-w-[1080px] items-center px-8 py-6"
+        className="relative z-10 mx-auto w-full px-6 py-6
+                   md:grid md:max-w-[1080px] md:items-center md:px-8"
         style={{
+          /* desktop only */
           gridTemplateColumns: "1fr 1fr",
           minHeight: "calc(100vh - var(--nav-h))",
         }}
       >
-        {/* ═══════════ LEFT ═══════════ */}
-        <div className="flex flex-col justify-center pr-4">
+
+        {/* ═══════════ TEXT BLOCK ═══════════ */}
+        <div className="flex flex-col justify-center md:pr-4">
 
           {/* Status pill */}
           <div
-            className="reveal mb-7 inline-flex w-fit items-center gap-2 rounded-full border px-4 py-[7px] text-[13px]"
+            className="reveal mb-6 inline-flex w-fit items-center gap-2 rounded-full border px-4 py-[7px] text-[13px]"
             style={{
               background: "rgba(255,255,255,0.055)",
               borderColor: "rgba(255,255,255,0.16)",
@@ -41,22 +48,23 @@ export default function Hero() {
                 animation: "pulse 2s ease-in-out infinite",
               }}
             />
-            Open to collaborations · Sri Lanka
+            {PERSON.status} · {PERSON.location}
           </div>
 
-          {/* ── Name: clean bold two-line matching original design ── */}
+          {/* Name */}
           <h1
-            className="reveal mb-5"
+            className="reveal mb-4"
             style={{
               fontFamily: "var(--font-space-grotesk)",
               fontWeight: 800,
-              fontSize: "clamp(2.2rem, 4.8vw, 5rem)",
+              /* mobile: bigger relative to vw; desktop: clamped smaller */
+              fontSize: "clamp(3rem, 12vw, 5rem)",
               lineHeight: 1.0,
               letterSpacing: "-0.02em",
             }}
           >
             <span style={{ display: "block", color: "#ffffff" }}>
-              Hasitha
+              {PERSON.firstName}
             </span>
             <span
               style={{
@@ -67,26 +75,24 @@ export default function Hero() {
                 color: "transparent",
               }}
             >
-              Sandakelum
+              {PERSON.lastName}
             </span>
           </h1>
 
           {/* Tagline */}
           <p
-            className="reveal mb-8 max-w-[400px] text-[14.5px] leading-[1.75]"
+            className="reveal mb-6 text-[15px] leading-[1.75] md:mb-8 md:max-w-[400px]"
             style={{ color: "rgba(255,255,255,0.55)" }}
           >
-            {age}-year-old developer from Sri Lanka, studying towards a{" "}
-            <span style={{ color: "#9c6ade", fontWeight: 500 }}>Bachelor of ICT</span>{" "}
-            and building products at the intersection of{" "}
-            <span style={{ color: "#9c6ade", fontWeight: 500 }}>code</span> and{" "}
-            <span style={{ color: "#9c6ade", fontWeight: 500 }}>design</span>.
+            {age}-year-old developer from {PERSON.location}, studying towards a{" "}
+            <span style={{ color: "#9c6ade", fontWeight: 500 }}>{PERSON.degree}</span>{" "}
+            and {PERSON.tagline}.
           </p>
 
-          {/* CTAs */}
-          <div className="reveal flex flex-wrap gap-4">
+          {/* CTAs — hidden on mobile, visible on desktop */}
+          <div className="reveal hidden flex-wrap gap-4 md:flex">
             <HoverLink
-              href="#about"
+              href={HERO.ctaPrimary.href}
               className="inline-flex items-center gap-2 rounded-full px-7 py-[11px] text-[14px] font-semibold"
               style={{
                 background: "linear-gradient(135deg,#7c3aed 0%,#9c6ade 100%)",
@@ -98,11 +104,11 @@ export default function Hero() {
                 boxShadow: "0 8px 36px rgba(124,58,237,0.7)",
               }}
             >
-              Explore ↓
+              {HERO.ctaPrimary.label}
             </HoverLink>
 
             <HoverLink
-              href="#contact"
+              href={HERO.ctaSecondary.href}
               className="inline-flex items-center gap-2 rounded-full border px-7 py-[11px] text-[14px] font-semibold"
               style={{
                 background: "rgba(255,255,255,0.04)",
@@ -114,12 +120,12 @@ export default function Hero() {
                 transform: "translateY(-2px)",
               }}
             >
-              Contact me
+              {HERO.ctaSecondary.label}
             </HoverLink>
           </div>
 
-          {/* Scroll hint */}
-          <div className="reveal mt-12 flex items-center gap-3">
+          {/* Scroll hint — desktop only (left-aligned under CTAs) */}
+          <div className="reveal mt-10 hidden items-center gap-3 md:flex">
             <div
               className="flex h-[30px] w-[18px] items-start justify-center rounded-full border pt-[5px]"
               style={{ borderColor: "rgba(255,255,255,0.18)" }}
@@ -139,24 +145,28 @@ export default function Hero() {
                 fontFamily: "var(--font-jetbrains-mono)",
               }}
             >
-              Scroll to explore
+              {HERO.scrollHint}
             </span>
           </div>
         </div>
 
-        {/* ═══════════ RIGHT: looping video ═══════════ */}
+        {/* ═══════════ VIDEO ═══════════ */}
         <div
-          className="reveal relative flex h-full items-center justify-center"
-          style={{ minHeight: "600px", minWidth :"600px" , overflow: "visible"  }}
+          className="reveal relative flex items-center justify-center
+                     mt-2 md:mt-0 md:h-full"
+          style={{
+            /* desktop keeps the min-size constraint */
+            minHeight: undefined,
+            overflow: "visible",
+          }}
         >
-          {/* Square crop wrapper — clips 16:9 video to 1:1 */}
           <div
             style={{
               position: "relative",
+              /* mobile: fill width; desktop: up to 900px */
               width: "min(100%, 900px)",
               aspectRatio: "1 / 1",
               overflow: "hidden",
-              /* 4-edge linear fade mask */
               maskImage: `
                 linear-gradient(to right,  transparent 0%, black 18%, black 82%, transparent 100%),
                 linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)
@@ -170,7 +180,7 @@ export default function Hero() {
             }}
           >
             <video
-              src="/portfolio/hero2.mp4"
+              src={HERO.videoSrc}
               autoPlay
               loop
               muted
@@ -180,13 +190,39 @@ export default function Hero() {
                 inset: 0,
                 width: "100%",
                 height: "100%",
-                objectFit: "cover",   /* crops 16:9 → 1:1 center */
+                objectFit: "cover",
                 objectPosition: "center center",
                 mixBlendMode: "screen",
               }}
             />
           </div>
         </div>
+
+        {/* ── Mobile-only scroll hint — centered below video ── */}
+        <div className="flex flex-col items-center gap-2 pb-6 pt-2 md:hidden">
+          <div
+            className="flex h-[30px] w-[18px] items-start justify-center rounded-full border pt-[5px]"
+            style={{ borderColor: "rgba(255,255,255,0.18)" }}
+          >
+            <div
+              className="h-[8px] w-[2px] rounded-full"
+              style={{
+                background: "rgba(255,255,255,0.28)",
+                animation: "float 1.8s ease-in-out infinite",
+              }}
+            />
+          </div>
+          <span
+            className="text-[10px] tracking-[0.22em] uppercase"
+            style={{
+              color: "rgba(255,255,255,0.28)",
+              fontFamily: "var(--font-jetbrains-mono)",
+            }}
+          >
+            {HERO.scrollHint}
+          </span>
+        </div>
+
       </div>
     </section>
   );
