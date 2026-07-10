@@ -123,6 +123,13 @@ body {
   display: none;
 }
 
+/* Mobile: lock container to small viewport height (excludes browser chrome) */
+@media (max-width: 767px) {
+  .snap-container {
+    height: calc(100svh - var(--nav-h));
+  }
+}
+
 /* ── 3D pastel clay text effect utility ──────────── */
 .text-3d-purple {
   color: #d8b4fe;
@@ -158,6 +165,16 @@ body {
   padding: clamp(24px, 5vw, 64px) clamp(16px, 4vw, 48px);
   position: relative;
   gap: 0;
+}
+
+/* Mobile: use svh so sections fit exactly within visible browser window */
+@media (max-width: 767px) {
+  .snap-section,
+  .snap-section-last {
+    min-height: calc(100svh - var(--nav-h));
+    height: calc(100svh - var(--nav-h));
+    overflow: hidden;
+  }
 }
 
 /* Section inner wrapper */
