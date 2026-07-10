@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-const SECTION_IDS = ["hero", "contact"];
+const SECTION_IDS = ["hero", "discover", "contact"];
 
 const IS_MOBILE = () =>
   typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;

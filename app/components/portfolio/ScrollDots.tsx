@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 
 const SECTIONS = [
-  { id: "hero",    label: "Home" },
-  { id: "contact", label: "Contact" },
+  { id: "hero",     label: "Home" },
+  { id: "discover", label: "Discover" },
+  { id: "contact",  label: "Contact" },
 ];
 
 export default function ScrollDots() {

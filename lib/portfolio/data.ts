@@ -21,8 +21,9 @@ export const NAV = {
   brand:  "Portfolio",
   cta:    "Get in touch",
   links: [
-    { href: "#hero",    label: "Home" },
-    { href: "#contact", label: "Contact" },
+    { href: "#hero",     label: "Home" },
+    { href: "#discover", label: "Discover" },
+    { href: "#contact",  label: "Contact" },
   ],
 };
 
