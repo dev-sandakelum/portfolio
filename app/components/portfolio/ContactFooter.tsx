@@ -18,7 +18,7 @@ export default function ContactFooter() {
       <div className="section-inner flex flex-1 items-center justify-center">
 
         {/* Offset wrapper — md+: push right 120px + down 20px; mobile: push down 30px only */}
-        <div className="max-w-[300px] md:max-w-[600px] mt-[120px] md:mt-[20px] md:ml-[240px] border border-red-100">
+        <div className="max-w-[300px] md:max-w-[600px] mt-[120px] md:mt-[20px] md:ml-[240px] border-red-100">
 
           <div className="reveal relative w-full overflow-hidden rounded-3xl p-10 text-center sm:p-14">
             <div className="pointer-events-none absolute inset-0" aria-hidden="true" />
