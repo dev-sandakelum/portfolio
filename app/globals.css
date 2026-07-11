@@ -383,3 +383,185 @@ button:focus-visible {
   0%, 100% { transform: translateY(0); }
   50%       { transform: translateY(-8px); }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   DISCOVER SECTION — RESPONSIVE LAYOUT
+   Desktop (≥1024px)  → absolute-positioned canvas (original design)
+   Tablet  (768–1023) → 2-column CSS grid, child scaled + centered
+   Mobile  (<768px)   → single-column flex locked to 100svh, no scroll
+═══════════════════════════════════════════════════════════════ */
+
+/* ── Desktop canvas: visible only on ≥1024px ── */
+.discover-desktop-canvas {
+  display: block;
+}
+
+/* ── Responsive layout: hidden on desktop, flex column on smaller screens ── */
+.discover-responsive-layout {
+  display: none;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(20px, 4vw, 48px) clamp(16px, 5vw, 40px);
+  gap: 0;
+  position: relative;
+  z-index: 10;
+  /* No min-height here — overridden per breakpoint */
+}
+
+/* ── Section header inside responsive layout ── */
+.discover-resp-header {
+  text-align: center;
+  width: 100%;
+  max-width: 540px;
+  flex-shrink: 0;
+}
+
+/* ── Child character — responsive base (overridden per breakpoint) ── */
+.discover-child-responsive {
+  position: relative;
+  pointer-events: none;
+  flex-shrink: 0;
+  z-index: 20;
+}
+
+/* ── Cards grid ── */
+.discover-cards-grid {
+  display: grid;
+  width: 100%;
+  max-width: 540px;
+  gap: 12px;
+}
+
+/* ── Individual responsive card ── */
+.discover-resp-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  /* 3:2 aspect ratio — used on tablet only; overridden on mobile */
+  aspect-ratio: 3 / 2;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* ─────────────────────────────────────────────
+   TABLET  768px – 1023px
+───────────────────────────────────────────── */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .discover-desktop-canvas {
+    display: none !important;
+  }
+
+  .discover-responsive-layout {
+    display: flex;
+    min-height: calc(100svh - var(--nav-h));
+  }
+
+  .discover-resp-header {
+    margin-bottom: 0.75rem;
+  }
+
+  /* Smaller mascot on tablet */
+  .discover-child-responsive {
+    width: 28vw;
+    max-width: 160px;
+    aspect-ratio: 3 / 5;
+    margin-bottom: -14px;
+  }
+
+  /* 2-column grid on tablet */
+  .discover-cards-grid {
+    grid-template-columns: 1fr 1fr;
+    max-width: 680px;
+    gap: 16px;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   MOBILE  < 768px
+   Strategy: locked flex column — height is 100svh minus nav.
+   Header + character are fixed-size; cards grid takes all
+   remaining space and each card gets an equal flex share.
+───────────────────────────────────────────── */
+@media (max-width: 767px) {
+  /* Section itself: restore the global snap lock (height + overflow:hidden) */
+  #discover.snap-section {
+    overflow: hidden;
+    height: calc(100svh - var(--nav-h));
+    min-height: calc(100svh - var(--nav-h));
+    display: flex;
+    align-items: stretch;
+  }
+
+  .discover-desktop-canvas {
+    display: none !important;
+  }
+
+  /* Responsive layout fills the entire section height */
+  .discover-responsive-layout {
+    display: flex;
+    /* Fill the full locked section height */
+    height: 100%;
+    /* No min-height needed — parent is already locked */
+    min-height: unset;
+    padding: 16px 20px 12px;
+    gap: 0;
+    justify-content: flex-start;
+    overflow: hidden;
+  }
+
+  /* Header: compact, fixed height — no growing */
+  .discover-resp-header {
+    margin-bottom: 6px;
+    flex-shrink: 0;
+  }
+
+  /* Hide subtext paragraph on mobile to save vertical space */
+  .discover-resp-header p {
+    display: none;
+  }
+
+  /* Smaller status badge */
+  .discover-resp-header > div:last-child {
+    font-size: 0.6rem;
+    margin-top: 2px;
+  }
+
+  /* Heading font size: compact but readable */
+  .discover-resp-header h2 {
+    font-size: clamp(1.1rem, 5.5vw, 1.4rem) !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* Mascot: fixed box so the fill Image has a properly sized parent */
+  .discover-child-responsive {
+    height: 88px;
+    width: 60px;
+    aspect-ratio: unset;
+    align-self: center;
+    margin-bottom: -16px;
+    flex-shrink: 0;
+  }
+
+  /* Cards grid: flex column so items grow to fill remaining space */
+  .discover-cards-grid {
+    display: flex;
+    flex-direction: column;
+    /* Takes all remaining vertical space after header + character */
+    flex: 1 1 0;
+    min-height: 0;
+    max-width: 100%;
+    gap: 8px;
+    padding-bottom: 4px;
+  }
+
+  /* Each card: equal share of the grid's height, no fixed aspect ratio */
+  .discover-resp-card {
+    flex: 1 1 0;
+    min-height: 0;
+    aspect-ratio: unset;
+    border-radius: 10px;
+  }
+}
+
