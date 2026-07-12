@@ -7,9 +7,9 @@ import { PERSON, CONTACT } from "@/lib/portfolio/data";
 export default function ContactFooter() {
   return (
     <section
-      className="snap-section-last relative"
+      className="relative"
       id="contact"
-      style={{ justifyContent: "center" }}
+      style={{ justifyContent: "center", minHeight: "calc(100vh - var(--nav-h))", display: "flex", flexDirection: "column", alignItems: "center" }}
     >
       {/* ── Observes visibility, flips data-theme, renders fixed bg ── */}
       <ContactThemeSync />
