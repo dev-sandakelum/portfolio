@@ -29,16 +29,6 @@ export default function About() {
       className="relative overflow-hidden"
       style={{ padding: 0 }}
     >
-      {/* Subtle ambient glow */}
-      <div
-        className="pointer-events-none absolute inset-0 z-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 60% 50% at 70% 40%, rgba(124,58,237,.1) 0%, transparent 70%)",
-        }}
-        aria-hidden="true"
-      />
-
       <div
         className="relative z-10 mx-auto w-full max-w-[920px] px-5 sm:px-8"
         style={{
@@ -90,17 +80,41 @@ export default function About() {
               </h2>
             </div>
 
-            <p style={{ color: "var(--text-dim)", fontSize: "14.5px", lineHeight: 1.75 }}>
-              Hi, I&apos;m <strong style={{ color: "var(--text)" }}>{PERSON.fullName}</strong> — a{" "}
-              {age}-year-old developer from{" "}
-              <span style={{ color: "var(--purple)" }}>{PERSON.location}</span>, studying towards a{" "}
-              <span style={{ color: "var(--purple)" }}>{PERSON.degree}</span>.
-            </p>
+            <p
+  style={{
+    color: "var(--text-dim)",
+    fontSize: "14.5px",
+    lineHeight: 1.75,
+  }}
+>
+  Hi, I&apos;m{" "}
+  <strong style={{ color: "var(--text)" }}>
+    {PERSON.fullName}
+  </strong>{" "}
+  , a {age}-year-old ICT undergraduate from{" "}
+  <span style={{ color: "var(--purple)" }}>
+    {PERSON.location}
+  </span>
+  , currently studying{" "}
+  <span style={{ color: "var(--purple)" }}>
+    {PERSON.degree}
+  </span>{" "}
+  at the University of Ruhuna.
+</p>
 
-            <p style={{ color: "var(--text-dim)", fontSize: "14px", lineHeight: 1.75 }}>
-              I&apos;m passionate about {PERSON.tagline}. I write tech articles in both Sinhala and
-              English, build open-source tools, and explore cloud & AI.
-            </p>
+<p
+  style={{
+    color: "var(--text-dim)",
+    fontSize: "14px",
+    lineHeight: 1.75,
+  }}
+>
+  I&apos;m a Microsoft Student Ambassador and a passionate full-stack
+  developer who enjoys building modern web applications, open-source
+  projects, and developer tools. I also create technical content in both
+  Sinhala and English while continuously exploring technologies like
+  React, Next.js, TypeScript, Three.js, cloud computing, and AI.
+</p>
 
             {/* Stats row */}
             <div className="flex flex-wrap gap-3">

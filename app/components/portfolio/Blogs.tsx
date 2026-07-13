@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { CATEGORIES, getAllArticles } from "@/lib/articles";
+import { CATEGORIES, getAllArticles, type ArticleMeta } from "@/lib/articles";
 import Sparkle from "./Sparkle";
 
 // ── helpers ───────────────────────────────────────────────────────────────────
@@ -41,14 +41,14 @@ function BlogCard({
   article,
   cat,
 }: {
-  article: ReturnType<typeof getAllArticles>[number];
+  article: ArticleMeta;
   cat: ReturnType<typeof CATEGORIES.find> | undefined;
 }) {
   const [hovered, setHovered] = useState(false);
 
   return (
     <Link
-      href={`/article/${article.meta.category}/${article.meta.id}`}
+      href={`/article/${article.category}/${article.id}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -78,11 +78,11 @@ function BlogCard({
           justifyContent: "center",
         }}
       >
-        {article.meta.coverImage ? (
+        {article.coverImage ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={article.meta.coverImage}
-            alt={article.meta.titleEn}
+            src={article.coverImage}
+            alt={article.titleEn}
             style={{
               width: "100%",
               height: "100%",
@@ -119,7 +119,7 @@ function BlogCard({
             margin: 0,
           }}
         >
-          {article.meta.titleEn}
+          {article.titleEn}
         </h4>
 
         <p
@@ -134,7 +134,7 @@ function BlogCard({
             overflow: "hidden",
           }}
         >
-          {article.meta.descriptionEn}
+          {article.descriptionEn}
         </p>
 
         {/* Meta footer */}
@@ -155,9 +155,9 @@ function BlogCard({
               color: "var(--text-faint)",
             }}
           >
-            {formatDate(article.meta.date)}
+            {formatDate(article.date)}
             <span style={{ margin: "0 5px" }}>·</span>
-            {article.meta.readingTime} min
+            {article.readingTime} min
           </span>
           <span
             style={{
@@ -194,7 +194,7 @@ export default function Blogs() {
     filter === "All"
       ? allArticles
       : allArticles.filter((a) => {
-          const cat = CATEGORIES.find((c) => c.slug === a.meta.category);
+          const cat = CATEGORIES.find((c) => c.slug === a.category);
           return cat?.label === filter;
         });
 
@@ -301,10 +301,10 @@ export default function Blogs() {
             }}
           >
             {filtered.map((article) => {
-              const cat = CATEGORIES.find((c) => c.slug === article.meta.category);
+              const cat = CATEGORIES.find((c) => c.slug === article.category);
               return (
                 <BlogCard
-                  key={`${article.meta.category}/${article.meta.id}`}
+                  key={`${article.category}/${article.id}`}
                   article={article}
                   cat={cat}
                 />
