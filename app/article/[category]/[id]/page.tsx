@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getArticle, getCategoryInfo, getAllArticles } from "@/lib/articles";
+import { getArticle, getCategoryInfo, getAllArticles } from "@/lib/articles.server";
 import type { Metadata } from "next";
 import { ArticleBody } from "./ArticleBody";
 import OrbBackground from "@/app/components/portfolio/OrbBackground";
