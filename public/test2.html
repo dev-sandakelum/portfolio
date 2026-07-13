@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio Admin</title>
+  <style>
+    :root{
+      --bg:#f4f6fa; --panel:#ffffff; --border:#e3e8ef; --text:#1e293b;
+      --muted:#64748b; --accent:#6d28d9; --accent-soft:#ede9fe;
+      --danger:#dc2626; --danger-soft:#fee2e2; --ok:#059669; --ok-soft:#d1fae5;
+      --radius:12px; --shadow:0 1px 3px rgba(15,23,42,.08);
+    }
+    *{box-sizing:border-box; margin:0; padding:0;}
+    body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans Sinhala",sans-serif; background:var(--bg); color:var(--text); font-size:14px;}
+    button{font-family:inherit; cursor:pointer;}
+    input,select,textarea{font-family:inherit; font-size:14px;}
+  
+    /* ===== Layout ===== */
+    .layout{display:flex; min-height:100vh;}
+    .sidebar{width:230px; background:#111827; color:#e5e7eb; padding:20px 12px; position:sticky; top:0; height:100vh; flex-shrink:0; display:flex; flex-direction:column;}
+    .brand{display:flex; align-items:center; gap:10px; padding:6px 10px 20px; font-weight:700; font-size:16px; color:#fff;}
+    .brand .logo{width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,#8b5cf6,#ec4899); display:grid; place-items:center; font-size:17px;}
+    .nav-item{display:flex; align-items:center; gap:10px; width:100%; padding:10px 12px; border:none; background:none; color:#9ca3af; border-radius:9px; font-size:14px; text-align:left; margin-bottom:2px; transition:.15s;}
+    .nav-item:hover{background:#1f2937; color:#fff;}
+    .nav-item.active{background:var(--accent); color:#fff;}
+    .nav-item .ico{width:20px; text-align:center;}
+    .nav-sep{margin:14px 12px 8px; font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:#6b7280;}
+    .sidebar-foot{margin-top:auto; padding:10px 12px; font-size:12px; color:#6b7280;}
+  
+    .main{flex:1; padding:26px 30px; max-width:1200px;}
+    .page-head{display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:20px; flex-wrap:wrap;}
+    .page-head h1{font-size:22px;}
+    .page-head p{color:var(--muted); margin-top:3px; font-size:13px;}
+    .head-actions{display:flex; gap:10px; flex-wrap:wrap;}
+  
+    /* ===== Buttons ===== */
+    .btn{display:inline-flex; align-items:center; gap:7px; padding:9px 15px; border-radius:9px; border:1px solid var(--border); background:#fff; color:var(--text); font-size:13px; font-weight:600; transition:.15s;}
+    .btn:hover{border-color:#c7cdd8; background:#f8fafc;}
+    .btn.primary{background:var(--accent); border-color:var(--accent); color:#fff;}
+    .btn.primary:hover{background:#5b21b6;}
+    .btn.danger{color:var(--danger);}
+    .btn.danger:hover{background:var(--danger-soft); border-color:#fca5a5;}
+    .btn.sm{padding:5px 10px; font-size:12px; border-radius:7px;}
+  
+    /* ===== Cards / stats ===== */
+    .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-bottom:24px;}
+    .stat{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px; box-shadow:var(--shadow); cursor:pointer; transition:.15s;}
+    .stat:hover{transform:translateY(-2px); box-shadow:0 4px 12px rgba(15,23,42,.1);}
+    .stat .num{font-size:26px; font-weight:800;}
+    .stat .lbl{color:var(--muted); font-size:12px; margin-top:2px;}
+    .stat .ico{font-size:20px; margin-bottom:8px;}
+  
+    .card{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); margin-bottom:20px; overflow:hidden;}
+    .card-head{padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+    .card-head h2{font-size:15px;}
+    .card-body{padding:18px;}
+  
+    /* ===== Toolbar / search ===== */
+    .toolbar{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+    .search{padding:8px 12px; border:1px solid var(--border); border-radius:9px; min-width:220px; background:#fff;}
+    .search:focus, select:focus, input:focus, textarea:focus{outline:2px solid var(--accent-soft); border-color:var(--accent);}
+    .filter-sel{padding:8px 10px; border:1px solid var(--border); border-radius:9px; background:#fff;}
+  
+    /* ===== Table ===== */
+    table{width:100%; border-collapse:collapse;}
+    th{font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); text-align:left; padding:11px 16px; border-bottom:1px solid var(--border); background:#f8fafc;}
+    td{padding:11px 16px; border-bottom:1px solid var(--border); vertical-align:middle;}
+    tr:last-child td{border-bottom:none;}
+    tbody tr:hover{background:#fafbff;}
+    .cell-main{font-weight:600;}
+    .cell-sub{color:var(--muted); font-size:12px; margin-top:2px;}
+    .row-actions{display:flex; gap:6px; justify-content:flex-end;}
+    .empty{padding:38px; text-align:center; color:var(--muted);}
+    .empty .big{font-size:30px; margin-bottom:8px;}
+  
+    /* ===== Badges ===== */
+    .badge{display:inline-block; padding:3px 9px; border-radius:99px; font-size:11px; font-weight:600; background:var(--accent-soft); color:var(--accent);}
+    .badge.gray{background:#f1f5f9; color:var(--muted);}
+    .badge.green{background:var(--ok-soft); color:var(--ok);}
+    .tag{display:inline-block; padding:2px 8px; border-radius:6px; font-size:11px; background:#f1f5f9; color:#475569; margin:1px 2px 1px 0;}
+    .icon-badge{width:34px; height:34px; border-radius:9px; background:#f1f5f9; display:grid; place-items:center; font-size:16px;}
+  
+    /* ===== Modal ===== */
+    .modal-overlay{position:fixed; inset:0; background:rgba(15,23,42,.5); display:none; align-items:flex-start; justify-content:center; padding:40px 16px; z-index:50; overflow-y:auto;}
+    .modal-overlay.open{display:flex;}
+    .modal{background:#fff; border-radius:14px; width:100%; max-width:640px; box-shadow:0 20px 50px rgba(0,0,0,.25); animation:pop .18s ease;}
+    @keyframes pop{from{transform:translateY(10px); opacity:0;} to{transform:none; opacity:1;}}
+    .modal-head{padding:16px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;}
+    .modal-head h3{font-size:16px;}
+    .modal-x{border:none; background:none; font-size:20px; color:var(--muted); line-height:1;}
+    .modal-body{padding:20px; display:grid; gap:14px; grid-template-columns:1fr 1fr;}
+    .modal-foot{padding:14px 20px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:10px;}
+    .field{display:flex; flex-direction:column; gap:5px;}
+    .field.full{grid-column:1 / -1;}
+    .field label{font-size:12px; font-weight:600; color:#475569;}
+    .field label .req{color:var(--danger);}
+    .field input, .field select, .field textarea{padding:9px 11px; border:1px solid var(--border); border-radius:8px; width:100%;}
+    .field textarea{min-height:90px; resize:vertical;}
+    .field .hint{font-size:11px; color:var(--muted);}
+  
+    /* ===== Toast ===== */
+    .toast{position:fixed; bottom:22px; right:22px; background:#111827; color:#fff; padding:12px 18px; border-radius:10px; font-size:13px; box-shadow:0 8px 24px rgba(0,0,0,.25); opacity:0; transform:translateY(8px); transition:.25s; z-index:99; pointer-events:none;}
+    .toast.show{opacity:1; transform:none;}
+    .toast.ok{background:#065f46;}
+    .toast.err{background:#991b1b;}
+  
+    .section{display:none;}
+    .section.active{display:block;}
+    .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+    @media(max-width:900px){
+      .sidebar{width:64px;}
+      .sidebar .txt,.brand span,.nav-sep,.sidebar-foot{display:none;}
+      .main{padding:18px;}
+      .modal-body{grid-template-columns:1fr;}
+      .grid-2{grid-template-columns:1fr;}
+    }
+  </style>
+  </head>
+  <body>
+  <div class="layout">
+  
+    <!-- ============ SIDEBAR ============ -->
+    <aside class="sidebar">
+      <div class="brand"><div class="logo">✦</div><span>Portfolio Admin</span></div>
+      <button class="nav-item active" data-sec="dashboard"><span class="ico">📊</span><span class="txt">Dashboard</span></button>
+      <div class="nav-sep">Content</div>
+      <button class="nav-item" data-sec="articles"><span class="ico">📝</span><span class="txt">Articles</span></button>
+      <button class="nav-item" data-sec="categories"><span class="ico">🗂</span><span class="txt">Article Categories</span></button>
+      <div class="nav-sep">Links</div>
+      <button class="nav-item" data-sec="links"><span class="ico">🔗</span><span class="txt">Shortlinks</span></button>
+      <button class="nav-item" data-sec="aitools"><span class="ico">🤖</span><span class="txt">AI Tools</span></button>
+      <div class="nav-sep">Downloads</div>
+      <button class="nav-item" data-sec="skills"><span class="ico">📦</span><span class="txt">Skills</span></button>
+      <div class="nav-sep">System</div>
+      <button class="nav-item" data-sec="data"><span class="ico">💾</span><span class="txt">Data / Backup</span></button>
+      <div class="sidebar-foot">v1.0 · local data</div>
+    </aside>
+  
+    <!-- ============ MAIN ============ -->
+    <main class="main">
+  
+      <!-- ===== DASHBOARD ===== -->
+      <section class="section active" id="sec-dashboard">
+        <div class="page-head">
+          <div><h1>Dashboard</h1><p>Overview of everything on your portfolio.</p></div>
+        </div>
+        <div class="stats" id="dashStats"></div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-head"><h2>🕒 Recent Articles</h2><button class="btn sm primary" onclick="Articles.openForm()">+ New</button></div>
+            <div id="dashRecentArticles"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>⬇ Top Skill Downloads</h2><button class="btn sm primary" onclick="Skills.openForm()">+ New</button></div>
+            <div id="dashTopSkills"></div>
+          </div>
+        </div>
+      </section>
+  
+      <!-- ===== ARTICLES ===== -->
+      <section class="section" id="sec-articles">
+        <div class="page-head">
+          <div><h1>Articles</h1><p>Manage articles shown on /article, category pages and the reader.</p></div>
+          <div class="head-actions"><button class="btn primary" onclick="Articles.openForm()">+ New Article</button></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="toolbar">
+              <input class="search" id="artSearch" placeholder="Search title, tags…" oninput="Articles.render()">
+              <select class="filter-sel" id="artCatFilter" onchange="Articles.render()"><option value="">All categories</option></select>
+            </div>
+          </div>
+          <div id="artTable"></div>
+        </div>
+      </section>
+  
+      <!-- ===== CATEGORIES ===== -->
+      <section class="section" id="sec-categories">
+        <div class="page-head">
+          <div><h1>Article Categories</h1><p>Categories shown on the /article index grid.</p></div>
+          <div class="head-actions"><button class="btn primary" onclick="Cats.openForm()">+ New Category</button></div>
+        </div>
+        <div class="card"><div id="catTable"></div></div>
+      </section>
+  
+      <!-- ===== SHORTLINKS ===== -->
+      <section class="section" id="sec-links">
+        <div class="page-head">
+          <div><h1>Shortlinks</h1><p>Redirect links served at /link/[code] — social + MS Learn plans.</p></div>
+          <div class="head-actions"><button class="btn primary" onclick="Links.openForm()">+ New Shortlink</button></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="toolbar">
+              <input class="search" id="linkSearch" placeholder="Search code, label, URL…" oninput="Links.render()">
+              <select class="filter-sel" id="linkSecFilter" onchange="Links.render()">
+                <option value="">All sections</option>
+                <option value="social">Social</option>
+                <option value="msplan">Microsoft Learn Plans</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div id="linkTable"></div>
+        </div>
+      </section>
+  
+      <!-- ===== AI TOOLS ===== -->
+      <section class="section" id="sec-aitools">
+        <div class="page-head">
+          <div><h1>AI Tools</h1><p>Tools shown on /link/ai grouped by category. Codes redirect via /link/[code].</p></div>
+          <div class="head-actions"><button class="btn primary" onclick="Tools.openForm()">+ New Tool</button></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="toolbar">
+              <input class="search" id="toolSearch" placeholder="Search name, code…" oninput="Tools.render()">
+              <select class="filter-sel" id="toolCatFilter" onchange="Tools.render()"><option value="">All categories</option></select>
+            </div>
+          </div>
+          <div id="toolTable"></div>
+        </div>
+      </section>
+  
+      <!-- ===== SKILLS ===== -->
+      <section class="section" id="sec-skills">
+        <div class="page-head">
+          <div><h1>Skill Downloads</h1><p>Downloadable skills at /download/[category]/skill/[slug].</p></div>
+          <div class="head-actions">
+            <button class="btn" onclick="SkillCats.openForm()">+ New Skill Category</button>
+            <button class="btn primary" onclick="Skills.openForm()">+ New Skill</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Categories</h2></div>
+          <div id="skillCatTable"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="toolbar">
+              <input class="search" id="skillSearch" placeholder="Search skills…" oninput="Skills.render()">
+              <select class="filter-sel" id="skillCatFilter" onchange="Skills.render()"><option value="">All categories</option></select>
+            </div>
+          </div>
+          <div id="skillTable"></div>
+        </div>
+      </section>
+  
+      <!-- ===== DATA ===== -->
+      <section class="section" id="sec-data">
+        <div class="page-head">
+          <div><h1>Data &amp; Backup</h1><p>All data is stored in this browser (localStorage). Export JSON to sync into your Next.js data files.</p></div>
+        </div>
+        <div class="card"><div class="card-body" style="display:flex; gap:12px; flex-wrap:wrap;">
+          <button class="btn primary" onclick="Store.exportJSON()">⬇ Export all data (JSON)</button>
+          <label class="btn">⬆ Import JSON<input type="file" accept=".json" style="display:none" onchange="Store.importJSON(this)"></label>
+          <button class="btn" onclick="Store.resetSeed()">↺ Restore sample data</button>
+          <button class="btn danger" onclick="Store.clearAll()">🗑 Clear everything</button>
+        </div></div>
+        <div class="card">
+          <div class="card-head"><h2>Live data preview</h2><button class="btn sm" onclick="document.getElementById('dataPreview').textContent = JSON.stringify(Store.data, null, 2)">Refresh</button></div>
+          <div class="card-body"><pre id="dataPreview" style="font-size:12px; overflow:auto; max-height:420px; color:#475569;"></pre></div>
+        </div>
+      </section>
+  
+    </main>
+  </div>
+  
+  <!-- ===== MODAL ===== -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-head"><h3 id="modalTitle">Edit</h3><button class="modal-x" onclick="Modal.close()">✕</button></div>
+      <form id="modalForm" onsubmit="return Modal.save(event)">
+        <div class="modal-body" id="modalBody"></div>
+        <div class="modal-foot">
+          <button type="button" class="btn" onclick="Modal.close()">Cancel</button>
+          <button type="submit" class="btn primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <div class="toast" id="toast"></div>
+  
+  <script>
+  /* ================= Utilities ================= */
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function toast(msg, type='ok'){
+    const t = $('#toast'); t.textContent = msg; t.className = 'toast show ' + type;
+    clearTimeout(t._h); t._h = setTimeout(()=> t.classList.remove('show'), 2400);
+  }
+  
+  /* ================= Store ================= */
+  const Store = {
+    KEY: 'portfolioAdminData',
+    data: null,
+    seed(){
+      const msplans = 'ABCDEFGHIJK'.split('').map(l => ({
+        code:'msplan/'+l.toLowerCase(), label:'MS Learn Plan '+l, subtitle:'learn.microsoft.com',
+        section:'msplan', icon:'📘', url:'https://learn.microsoft.com/'
+      }));
+      return {
+        categories:[
+          {id:'github', icon:'🐙', label:'GitHub', descEn:'Git, GitHub and open source workflows', descSi:'GitHub සහ open source ලිපි'},
+          {id:'azure', icon:'☁️', label:'Azure', descEn:'Microsoft Azure cloud guides', descSi:'Azure වලාකුළු මාර්ගෝපදේශ'},
+          {id:'aiml', icon:'🤖', label:'AI/ML', descEn:'AI and machine learning topics', descSi:'AI සහ යන්ත්‍ර ඉගෙනුම් ලිපි'}
+        ],
+        articles:[
+          {id:'getting-started-github', category:'github', titleSi:'GitHub සමඟ ආරම්භය', subtitleEn:'Getting started with GitHub',
+           description:'A beginner-friendly walkthrough of repos, commits and pull requests.', date:'2026-06-20', readingTime:'6 min',
+           tags:'github, git, beginner', coverImage:'', body:'## Introduction\n\nWrite your markdown here…'}
+        ],
+        shortlinks:[
+          {code:'linkedin', label:'LinkedIn', subtitle:'linkedin.com', section:'social', icon:'💼', url:'https://linkedin.com/in/your-profile'},
+          {code:'github',   label:'GitHub',   subtitle:'github.com',   section:'social', icon:'🐙', url:'https://github.com/your-username'},
+          {code:'youtube',  label:'YouTube',  subtitle:'youtube.com',  section:'social', icon:'▶️', url:'https://youtube.com/@your-channel'},
+          {code:'whatsapp', label:'WhatsApp', subtitle:'wa.me',        section:'social', icon:'💬', url:'https://wa.me/your-number'},
+          ...msplans
+        ],
+        aiTools:[
+          {code:'chat/chatgpt', name:'ChatGPT', subtitle:'chat.openai.com', category:'chat', icon:'💬'},
+          {code:'chat/claude',  name:'Claude',  subtitle:'claude.ai',       category:'chat', icon:'✳️'},
+          {code:'code/copilot', name:'GitHub Copilot', subtitle:'github.com/features/copilot', category:'code', icon:'💻'}
+        ],
+        skillCategories:[
+          {id:'ai', icon:'🤖', label:'AI Skills', description:'Downloadable AI skill packs'}
+        ],
+        skills:[
+          {slug:'sample-skill', category:'ai', name:'Sample Skill', description:'Example skill pack', fileUrl:'https://example.com/skill.zip', downloads:0}
+        ]
+      };
+    },
+    load(){
+      try{ this.data = JSON.parse(localStorage.getItem(this.KEY)) || this.seed(); }
+      catch(e){ this.data = this.seed(); }
+      // ensure all keys exist
+      const s = this.seed();
+      for (const k of Object.keys(s)) if (!Array.isArray(this.data[k])) this.data[k] = s[k];
+      this.save(false);
+    },
+    save(notify=true){
+      localStorage.setItem(this.KEY, JSON.stringify(this.data));
+      renderAll();
+      if (notify) toast('Saved ✔');
+    },
+    exportJSON(){
+      const blob = new Blob([JSON.stringify(this.data, null, 2)], {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'portfolio-data-' + new Date().toISOString().slice(0,10) + '.json';
+      a.click(); URL.revokeObjectURL(a.href);
+      toast('Exported JSON ⬇');
+    },
+    importJSON(input){
+      const f = input.files[0]; if (!f) return;
+      const r = new FileReader();
+      r.onload = () => {
+        try{
+          const d = JSON.parse(r.result);
+          this.data = Object.assign(this.seed(), d);
+          this.save(false); toast('Imported ✔');
+        }catch(e){ toast('Invalid JSON file', 'err'); }
+        input.value = '';
+      };
+      r.readAsText(f);
+    },
+    resetSeed(){
+      if (!confirm('Replace current data with the sample data?')) return;
+      this.data = this.seed(); this.save(false); toast('Sample data restored');
+    },
+    clearAll(){
+      if (!confirm('Delete ALL data? This cannot be undone.')) return;
+      this.data = {categories:[],articles:[],shortlinks:[],aiTools:[],skillCategories:[],skills:[]};
+      this.save(false); toast('All data cleared', 'err');
+    }
+  };
+  
+  /* ================= Modal (generic form) ================= */
+  const Modal = {
+    _onSave: null,
+    open(title, fields, values, onSave){
+      $('#modalTitle').textContent = title;
+      const body = $('#modalBody'); body.innerHTML = '';
+      for (const f of fields){
+        const wrap = document.createElement('div');
+        wrap.className = 'field' + (f.full ? ' full' : '');
+        const val = values?.[f.key] ?? f.default ?? '';
+        let ctrl;
+        if (f.type === 'textarea'){
+          ctrl = `<textarea name="${f.key}" ${f.required?'required':''} placeholder="${esc(f.placeholder||'')}">${esc(val)}</textarea>`;
+        } else if (f.type === 'select'){
+          ctrl = `<select name="${f.key}" ${f.required?'required':''}>` +
+            f.options.map(o => `<option value="${esc(o.value)}" ${String(o.value)===String(val)?'selected':''}>${esc(o.label)}</option>`).join('') +
+            `</select>`;
+        } else {
+          ctrl = `<input name="${f.key}" type="${f.type||'text'}" value="${esc(val)}" ${f.required?'required':''} placeholder="${esc(f.placeholder||'')}" ${f.readonly?'readonly style="background:#f8fafc;color:#94a3b8"':''}>`;
+        }
+        wrap.innerHTML = `<label>${esc(f.label)} ${f.required?'<span class="req">*</span>':''}</label>${ctrl}` +
+          (f.hint ? `<div class="hint">${esc(f.hint)}</div>` : '');
+        body.appendChild(wrap);
+      }
+      this._onSave = onSave;
+      $('#modalOverlay').classList.add('open');
+      setTimeout(()=>{ const el = body.querySelector('input:not([readonly]),textarea,select'); el && el.focus(); }, 50);
+    },
+    close(){ $('#modalOverlay').classList.remove('open'); this._onSave = null; },
+    save(e){
+      e.preventDefault();
+      const fd = new FormData($('#modalForm'));
+      const obj = {};
+      for (const [k,v] of fd.entries()) obj[k] = v.trim();
+      if (this._onSave && this._onSave(obj) !== false) this.close();
+      return false;
+    }
+  };
+  $('#modalOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) Modal.close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') Modal.close(); });
+  
+  /* ================= Helpers ================= */
+  function actionBtns(mod, key){
+    return `<div class="row-actions">
+      <button class="btn sm" onclick="${mod}.openForm('${esc(key)}')">✏️ Edit</button>
+      <button class="btn sm danger" onclick="${mod}.remove('${esc(key)}')">🗑</button>
+    </div>`;
+  }
+  function emptyRow(cols, msg){
+    return `<tr><td colspan="${cols}"><div class="empty"><div class="big">🗒</div>${esc(msg)}</div></td></tr>`;
+  }
+  function fillSelect(sel, options, keepValue=true){
+    const el = $(sel); const cur = keepValue ? el.value : '';
+    el.innerHTML = el.options[0].outerHTML + options.map(o=>`<option value="${esc(o.value)}">${esc(o.label)}</option>`).join('');
+    el.value = cur;
+  }
+  
+  const TOOL_CATS = [
+    {value:'chat',label:'💬 Chat'},{value:'code',label:'💻 Code'},{value:'design',label:'🎨 Design'},
+    {value:'image',label:'🖼 Image'},{value:'write',label:'✍ Write'},{value:'audio',label:'🎵 Audio'},
+    {value:'video',label:'🎬 Video'},{value:'search',label:'🔍 Search'},{value:'data',label:'📊 Data'},
+    {value:'util',label:'⚙ Utilities'}
+  ];
+  const toolCatLabel = v => (TOOL_CATS.find(c=>c.value===v)||{label:v}).label;
+  
+  /* ================= Articles ================= */
+  const Articles = {
+    fields(catOptions){
+      return [
+        {key:'id', label:'Slug / ID', required:true, placeholder:'my-article-slug', hint:'Used in URL: /article/[category]/[id]'},
+        {key:'category', label:'Category', type:'select', required:true, options:catOptions},
+        {key:'titleSi', label:'Title (Sinhala)', required:true, full:true, placeholder:'සිංහල මාතෘකාව'},
+        {key:'subtitleEn', label:'Subtitle (English)', full:true, placeholder:'English subtitle'},
+        {key:'date', label:'Date', type:'date', required:true},
+        {key:'readingTime', label:'Reading time', placeholder:'6 min'},
+        {key:'tags', label:'Tags', full:true, placeholder:'comma, separated, tags'},
+        {key:'coverImage', label:'Cover image URL', full:true, placeholder:'https://… (optional)'},
+        {key:'description', label:'Description (callout box)', type:'textarea', full:true},
+        {key:'body', label:'Body (Markdown)', type:'textarea', full:true, placeholder:'## Heading\n\nContent…'}
+      ];
+    },
+    openForm(id){
+      const cats = Store.data.categories.map(c=>({value:c.id, label:c.icon+' '+c.label}));
+      if (!cats.length) return toast('Create an article category first', 'err');
+      const item = Store.data.articles.find(a=>a.id===id);
+      Modal.open(item?'Edit Article':'New Article', this.fields(cats), item, obj => {
+        obj.id = obj.id.toLowerCase().replace(/\s+/g,'-');
+        const dup = Store.data.articles.find(a=>a.id===obj.id && a!==item);
+        if (dup){ toast('An article with this slug already exists', 'err'); return false; }
+        if (item) Object.assign(item, obj); else Store.data.articles.push(obj);
+        Store.save();
+      });
+    },
+    remove(id){
+      if (!confirm('Delete this article?')) return;
+      Store.data.articles = Store.data.articles.filter(a=>a.id!==id);
+      Store.save(); toast('Article deleted');
+    },
+    render(){
+      fillSelect('#artCatFilter', Store.data.categories.map(c=>({value:c.id,label:c.icon+' '+c.label})));
+      const q = ($('#artSearch').value||'').toLowerCase();
+      const cf = $('#artCatFilter').value;
+      const rows = Store.data.articles
+        .filter(a => (!cf || a.category===cf) && (!q || (a.titleSi+' '+a.subtitleEn+' '+a.tags+' '+a.id).toLowerCase().includes(q)))
+        .sort((a,b)=> (b.date||'').localeCompare(a.date||''))
+        .map(a => {
+          const cat = Store.data.categories.find(c=>c.id===a.category) || {icon:'❓', label:a.category};
+          const tags = (a.tags||'').split(',').map(t=>t.trim()).filter(Boolean).map(t=>`<span class="tag">${esc(t)}</span>`).join('');
+          return `<tr>
+            <td><div class="cell-main">${esc(a.titleSi)}</div><div class="cell-sub">${esc(a.subtitleEn||'')} · /article/${esc(a.category)}/${esc(a.id)}</div></td>
+            <td><span class="badge">${esc(cat.icon+' '+cat.label)}</span></td>
+            <td><div>${esc(a.date||'—')}</div><div class="cell-sub">${esc(a.readingTime||'')}</div></td>
+            <td>${tags||'<span class="cell-sub">—</span>'}</td>
+            <td>${actionBtns('Articles', a.id)}</td>
+          </tr>`;
+        }).join('');
+      $('#artTable').innerHTML = `<table><thead><tr><th>Article</th><th>Category</th><th>Date</th><th>Tags</th><th style="text-align:right">Actions</th></tr></thead><tbody>${rows || emptyRow(5,'No articles found — add your first one!')}</tbody></table>`;
+    }
+  };
+  
+  /* ================= Article Categories ================= */
+  const Cats = {
+    fields: [
+      {key:'id', label:'ID', required:true, placeholder:'github', hint:'Used in URL: /article/[category]'},
+      {key:'icon', label:'Icon (emoji)', required:true, placeholder:'🐙'},
+      {key:'label', label:'Label', required:true, full:true, placeholder:'GitHub'},
+      {key:'descEn', label:'Description (English)', full:true},
+      {key:'descSi', label:'Description (Sinhala)', full:true, placeholder:'සිංහල විස්තරය'}
+    ],
+    openForm(id){
+      const item = Store.data.categories.find(c=>c.id===id);
+      const fields = this.fields.map(f => f.key==='id' ? {...f, readonly:!!item} : f);
+      Modal.open(item?'Edit Category':'New Category', fields, item, obj => {
+        obj.id = obj.id.toLowerCase().replace(/\s+/g,'-');
+        const dup = Store.data.categories.find(c=>c.id===obj.id && c!==item);
+        if (dup){ toast('Category ID already exists', 'err'); return false; }
+        if (item) Object.assign(item, obj); else Store.data.categories.push(obj);
+        Store.save();
+      });
+    },
+    remove(id){
+      const n = Store.data.articles.filter(a=>a.category===id).length;
+      if (!confirm(n ? `This category has ${n} article(s). Delete category AND its articles?` : 'Delete this category?')) return;
+      Store.data.categories = Store.data.categories.filter(c=>c.id!==id);
+      Store.data.articles = Store.data.articles.filter(a=>a.category!==id);
+      Store.save(); toast('Category deleted');
+    },
+    render(){
+      const rows = Store.data.categories.map(c => {
+        const n = Store.data.articles.filter(a=>a.category===c.id).length;
+        return `<tr>
+          <td style="width:52px"><div class="icon-badge">${esc(c.icon)}</div></td>
+          <td><div class="cell-main">${esc(c.label)}</div><div class="cell-sub">/article/${esc(c.id)}</div></td>
+          <td><div>${esc(c.descEn||'—')}</div><div class="cell-sub">${esc(c.descSi||'')}</div></td>
+          <td><span class="badge gray">${n} article${n===1?'':'s'}</span></td>
+          <td>${actionBtns('Cats', c.id)}</td>
+        </tr>`;
+      }).join('');
+      $('#catTable').innerHTML = `<table><thead><tr><th></th><th>Category</th><th>Descriptions</th><th>Count</th><th style="text-align:right">Actions</th></tr></thead><tbody>${rows || emptyRow(5,'No categories yet.')}</tbody></table>`;
+    }
+  };
+  
+  /* ================= Shortlinks ================= */
+  const Links = {
+    fields: [
+      {key:'code', label:'Code', required:true, placeholder:'linkedin or msplan/a', hint:'URL: /link/[code] — slash codes allowed'},
+      {key:'section', label:'Section', type:'select', required:true, options:[
+        {value:'social',label:'Social'},{value:'msplan',label:'Microsoft Learn Plan'},{value:'other',label:'Other'}]},
+      {key:'label', label:'Label', required:true, placeholder:'LinkedIn'},
+      {key:'icon', label:'Icon (emoji)', placeholder:'💼'},
+      {key:'subtitle', label:'Subtitle / domain', full:true, placeholder:'linkedin.com'},
+      {key:'url', label:'Destination URL', type:'url', required:true, full:true, placeholder:'https://…'}
+    ],
+    openForm(code){
+      const item = Store.data.shortlinks.find(l=>l.code===code);
+      Modal.open(item?'Edit Shortlink':'New Shortlink', this.fields, item, obj => {
+        obj.code = obj.code.toLowerCase().replace(/\s+/g,'-');
+        const dup = Store.data.shortlinks.find(l=>l.code===obj.code && l!==item);
+        if (dup){ toast('This code already exists', 'err'); return false; }
+        if (item) Object.assign(item, obj); else Store.data.shortlinks.push(obj);
+        Store.save();
+      });
+    },
+    remove(code){
+      if (!confirm('Delete shortlink /link/' + code + '?')) return;
+      Store.data.shortlinks = Store.data.shortlinks.filter(l=>l.code!==code);
+      Store.save(); toast('Shortlink deleted');
+    },
+    render(){
+      const q = ($('#linkSearch').value||'').toLowerCase();
+      const sf = $('#linkSecFilter').value;
+      const secBadge = s => s==='social' ? '<span class="badge">Social</span>' : s==='msplan' ? '<span class="badge green">MS Learn</span>' : '<span class="badge gray">Other</span>';
+      const rows = Store.data.shortlinks
+        .filter(l => (!sf || l.section===sf) && (!q || (l.code+' '+l.label+' '+l.url).toLowerCase().includes(q)))
+        .map(l => `<tr>
+          <td style="width:52px"><div class="icon-badge">${esc(l.icon||'🔗')}</div></td>
+          <td><div class="cell-main">${esc(l.label)}</div><div class="cell-sub">/link/${esc(l.code)}</div></td>
+          <td>${secBadge(l.section)}</td>
+          <td><a href="${esc(l.url)}" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:none;">${esc(l.url.length>48 ? l.url.slice(0,48)+'…' : l.url)}</a><div class="cell-sub">${esc(l.subtitle||'')}</div></td>
+          <td>${actionBtns('Links', l.code)}</td>
+        </tr>`).join('');
+      $('#linkTable').innerHTML = `<table><thead><tr><th></th><th>Link</th><th>Section</th><th>Destination</th><th style="text-align:right">Actions</th></tr></thead><tbody>${rows || emptyRow(5,'No shortlinks found.')}</tbody></table>`;
+    }
+  };
+  
+  /* ================= AI Tools ================= */
+  const Tools = {
+    fields: [
+      {key:'code', label:'Code', required:true, placeholder:'chat/chatgpt', hint:'URL: /link/[code]'},
+      {key:'category', label:'Category', type:'select', required:true, options:TOOL_CATS},
+      {key:'name', label:'Name', required:true, placeholder:'ChatGPT'},
+      {key:'icon', label:'Icon (emoji)', placeholder:'💬'},
+      {key:'subtitle', label:'Subtitle / domain', full:true, placeholder:'chat.openai.com'}
+    ],
+    openForm(code){
+      const item = Store.data.aiTools.find(t=>t.code===code);
+      Modal.open(item?'Edit AI Tool':'New AI Tool', this.fields, item, obj => {
+        obj.code = obj.code.toLowerCase().replace(/\s+/g,'-');
+        const dup = Store.data.aiTools.find(t=>t.code===obj.code && t!==item);
+        if (dup){ toast('This code already exists', 'err'); return false; }
+        if (item) Object.assign(item, obj); else Store.data.aiTools.push(obj);
+        Store.save();
+      });
+    },
+    remove(code){
+      if (!confirm('Delete this AI tool?')) return;
+      Store.data.aiTools = Store.data.aiTools.filter(t=>t.code!==code);
+      Store.save(); toast('Tool deleted');
+    },
+    render(){
+      fillSelect('#toolCatFilter', TOOL_CATS);
+      const q = ($('#toolSearch').value||'').toLowerCase();
+      const cf = $('#toolCatFilter').value;
+      const rows = Store.data.aiTools
+        .filter(t => (!cf || t.category===cf) && (!q || (t.name+' '+t.code+' '+t.subtitle).toLowerCase().includes(q)))
+        .sort((a,b)=> a.category.localeCompare(b.category) || a.name.localeCompare(b.name))
+        .map(t => `<tr>
+          <td style="width:52px"><div class="icon-badge">${esc(t.icon||'🤖')}</div></td>
+          <td><div class="cell-main">${esc(t.name)}</div><div class="cell-sub">/link/${esc(t.code)}</div></td>
+          <td><span class="badge">${esc(toolCatLabel(t.category))}</span></td>
+          <td class="cell-sub">${esc(t.subtitle||'—')}</td>
+          <td>${actionBtns('Tools', t.code)}</td>
+        </tr>`).join('');
+      $('#toolTable').innerHTML = `<table><thead><tr><th></th><th>Tool</th><th>Category</th><th>Subtitle</th><th style="text-align:right">Actions</th></tr></thead><tbody>${rows || emptyRow(5,'No AI tools found.')}</tbody></table>`;
+    }
+  };
+  
+  /* ================= Skill Categories ================= */
+  const SkillCats = {
+    fields: [
+      {key:'id', label:'ID', required:true, placeholder:'ai', hint:'URL: /download/[category]/skill'},
+      {key:'icon', label:'Icon (emoji)', placeholder:'🤖'},
+      {key:'label', label:'Label', required:true, full:true, placeholder:'AI Skills'},
+      {key:'description', label:'Description', type:'textarea', full:true}
+    ],
+    openForm(id){
+      const item = Store.data.skillCategories.find(c=>c.id===id);
+      const fields = this.fields.map(f => f.key==='id' ? {...f, readonly:!!item} : f);
+      Modal.open(item?'Edit Skill Category':'New Skill Category', fields, item, obj => {
+        obj.id = obj.id.toLowerCase().replace(/\s+/g,'-');
+        const dup = Store.data.skillCategories.find(c=>c.id===obj.id && c!==item);
+        if (dup){ toast('Category ID already exists', 'err'); return false; }
+        if (item) Object.assign(item, obj); else Store.data.skillCategories.push(obj);
+        Store.save();
+      });
+    },
+    remove(id){
+      const n = Store.data.skills.filter(s=>s.category===id).length;
+      if (!confirm(n ? `This category has ${n} skill(s). Delete category AND its skills?` : 'Delete this category?')) return;
+      Store.data.skillCategories = Store.data.skillCategories.filter(c=>c.id!==id);
+      Store.data.skills = Store.data.skills.filter(s=>s.category!==id);
+      Store.save(); toast('Skill category deleted');
+    },
+    render(){
+      const rows = Store.data.skillCategories.map(c => {
+        const n = Store.data.skills.filter(s=>s.category===c.id).length;
+        return `<tr>
+          <td style="width:52px"><div class="icon-badge">${esc(c.icon||'📦')}</div></td>
+          <td><div class="cell-main">${esc(c.label)}</div><div class="cell-sub">/download/${esc(c.id)}/skill</div></td>
+          <td class="cell-sub">${esc(c.description||'—')}</td>
+          <td><span class="badge gray">${n} skill${n===1?'':'s'}</span></td>
+          <td>${actionBtns('SkillCats', c.id)}</td>
+        </tr>`;
+      }).join('');
+      $('#skillCatTable').innerHTML = `<table><thead><tr><th></th><th>Category</th><th>Description</th><th>Count</th><th style="text-align:right">Actions</th></tr></thead><tbody>${rows || emptyRow(5,'No skill categories yet.')}</tbody></table>`;
+    }
+  };
+  
+  /* ================= Skills ================= */
+  const Skills = {
+    openForm(slug){
+      const cats = Store.data.skillCategories.map(c=>({value:c.id, label:(c.icon||'📦')+' '+c.label}));
+      if (!cats.length) return toast('Create a skill category first', 'err');
+      const item = Store.data.skills.find(s=>s.slug===slug);
+      const fields = [
+        {key:'slug', label:'Slug', required:true, placeholder:'my-skill', hint:'URL: /download/[category]/skill/[slug]'},
+        {key:'category', label:'Category', type:'select', required:true, options:cats},
+        {key:'name', label:'Name', required:true, full:true, placeholder:'My Skill Pack'},
+        {key:'description', label:'Description', type:'textarea', full:true},
+        {key:'fileUrl', label:'File URL', type:'url', required:true, full:true, placeholder:'https://…/skill.zip'},
+        {key:'downloads', label:'Download count', type:'number', default:0}
+      ];
+      Modal.open(item?'Edit Skill':'New Skill', fields, item, obj => {
+        obj.slug = obj.slug.toLowerCase().replace(/\s+/g,'-');
+        obj.downloads = Number(obj.downloads)||0;
+        const dup = Store.data.skills.find(s=>s.slug===obj.slug && s!==item);
+        if (dup){ toast('This slug already exists', 'err'); return false; }
+        if (item) Object.assign(item, obj); else Store.data.skills.push(obj);
+        Store.save();
+      });
+    },
+    remove(slug){
+      if (!confirm('Delete this skill?')) return;
+      Store.data.skills = Store.data.skills.filter(s=>s.slug!==slug);
+      Store.save(); toast('Skill deleted');
+    },
+    render(){
+      fillSelect('#skillCatFilter', Store.data.skillCategories.map(c=>({value:c.id,label:(c.icon||'📦')+' '+c.label})));
+      const q = ($('#skillSearch').value||'').toLowerCase();
+      const cf = $('#skillCatFilter').value;
+      const rows = Store.data.skills
+        .filter(s => (!cf || s.category===cf) && (!q || (s.name+' '+s.slug).toLowerCase().includes(q)))
+        .map(s => {
+          const cat = Store.data.skillCategories.find(c=>c.id===s.category) || {icon:'❓', label:s.category};
+          return `<tr>
+            <td><div class="cell-main">${esc(s.name)}</div><div class="cell-sub">/download/${esc(s.category)}/skill/${esc(s.slug)}</div></td>
+            <td><span class="badge">${esc((cat.icon||'')+' '+cat.label)}</span></td>
+            <td><a href="${esc(s.fileUrl)}" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:none;">${esc((s.fileUrl||'').length>40 ? s.fileUrl.slice(0,40)+'…' : (s.fileUrl||'—'))}</a></td>
+            <td><span class="badge green">⬇ ${Number(s.downloads)||0}</span></td>
+            <td>${actionBtns('Skills', s.slug)}</td>
+          </tr>`;
+        }).join('');
+      $('#skillTable').innerHTML = `<table><thead><tr><th>Skill</th><th>Category</th><th>File</th><th>Downloads</th><th style="text-align:right">Actions</th></tr></thead><tbody>${rows || emptyRow(5,'No skills found.')}</tbody></table>`;
+    }
+  };
+  
+  /* ================= Dashboard ================= */
+  const Dash = {
+    render(){
+      const d = Store.data;
+      const stats = [
+        {ico:'📝', num:d.articles.length, lbl:'Articles', sec:'articles'},
+        {ico:'🗂', num:d.categories.length, lbl:'Article Categories', sec:'categories'},
+        {ico:'🔗', num:d.shortlinks.length, lbl:'Shortlinks', sec:'links'},
+        {ico:'🤖', num:d.aiTools.length, lbl:'AI Tools', sec:'aitools'},
+        {ico:'📦', num:d.skills.length, lbl:'Skills', sec:'skills'},
+        {ico:'⬇', num:d.skills.reduce((a,s)=>a+(Number(s.downloads)||0),0), lbl:'Total Downloads', sec:'skills'}
+      ];
+      $('#dashStats').innerHTML = stats.map(s =>
+        `<div class="stat" onclick="showSection('${s.sec}')"><div class="ico">${s.ico}</div><div class="num">${s.num}</div><div class="lbl">${s.lbl}</div></div>`).join('');
+  
+      const recent = [...d.articles].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,5);
+      $('#dashRecentArticles').innerHTML = recent.length
+        ? `<table><tbody>${recent.map(a=>`<tr><td><div class="cell-main">${esc(a.titleSi)}</div><div class="cell-sub">${esc(a.subtitleEn||'')}</div></td><td style="text-align:right" class="cell-sub">${esc(a.date||'')}</td></tr>`).join('')}</tbody></table>`
+        : `<div class="empty">No articles yet</div>`;
+  
+      const top = [...d.skills].sort((a,b)=>(Number(b.downloads)||0)-(Number(a.downloads)||0)).slice(0,5);
+      $('#dashTopSkills').innerHTML = top.length
+        ? `<table><tbody>${top.map(s=>`<tr><td><div class="cell-main">${esc(s.name)}</div><div class="cell-sub">${esc(s.slug)}</div></td><td style="text-align:right"><span class="badge green">⬇ ${Number(s.downloads)||0}</span></td></tr>`).join('')}</tbody></table>`
+        : `<div class="empty">No skills yet</div>`;
+    }
+  };
+  
+  /* ================= Navigation & init ================= */
+  function showSection(sec){
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active', b.dataset.sec===sec));
+    $('#sec-'+sec).classList.add('active');
+    if (sec==='data') $('#dataPreview').textContent = JSON.stringify(Store.data, null, 2);
+  }
+  document.querySelectorAll('.nav-item').forEach(b => b.addEventListener('click', ()=>showSection(b.dataset.sec)));
+  
+  function renderAll(){
+    Dash.render(); Articles.render(); Cats.render(); Links.render(); Tools.render(); SkillCats.render(

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getArticlesByCategory, getCategoryInfo, CATEGORIES } from "@/lib/articles";
+import { getArticlesByCategory, getCategoryInfo, CATEGORIES } from "@/lib/articles.server";
 import type { Metadata } from "next";
 import OrbBackground from "@/app/components/portfolio/OrbBackground";
 import Sparkle from "@/app/components/portfolio/Sparkle";

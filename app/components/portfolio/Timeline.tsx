@@ -1,0 +1,580 @@
+"use client";
+  
+  import { useState } from "react";
+  import Sparkle from "./Sparkle";
+  
+  type Status = "Ongoing" | "Completed";
+  type Filter = "All" | Status;
+  
+  const EVENTS = [
+    {
+      year: "Now",
+      title: "Microsoft Student Ambassador",
+      org: "Microsoft Learn",
+      desc: "Selected as a Microsoft Student Ambassador, learning, building, and empowering the student developer community through Microsoft technologies.",
+      tag: "Microsoft",
+      logo: "/portfolio/msLearn/LevelAlpha.png",
+      period: "Jul 2026 – Present",
+      status: "Ongoing" as Status,
+      current: true,
+      accent: "#3b82f6",
+    },
+    {
+      year: "Jul 2025",
+      title: "ICT Representative",
+      org: "University of Ruhuna",
+      desc: "Served as the ICT Representative, supporting student activities and acting as a bridge between students and the department.",
+      tag: "Leadership",
+      logo: "/portfolio/ruhuna.png",
+      period: "Jul 2025 – Mar 2026",
+      status: "Completed" as Status,
+      current: false,
+      accent: "#a78bfa",
+    },
+    {
+      year: "Jul 2025",
+      title: "Bachelor of ICT",
+      org: "University of Ruhuna",
+      desc: "Currently pursuing a Bachelor's degree in Information & Communication Technology at the University of Ruhuna.",
+      tag: "Education",
+      logo: "/portfolio/ruhuna.png",
+      period: "Jul 2025 – Present",
+      status: "Ongoing" as Status,
+      current: true,
+      accent: "#10b981",
+    },
+    {
+      year: "2024",
+      title: "Associate Trainee",
+      org: "OREL IT",
+      desc: "Completed a six-month Associate Trainee program at OREL IT, gaining practical experience in software development and industry workflows.",
+      tag: "Career",
+      logo: "/portfolio/orel.png",
+      period: "Aug 2024 – Jan 2025",
+      status: "Completed" as Status,
+      current: false,
+      accent: "#a78bfa",
+    },
+    {
+      year: "2015",
+      title: "A/L — Information Technology",
+      org: "Bandaranayake College, Gampaha",
+      desc: "Studied Information Technology at Advanced Level, building the foundational knowledge that sparked my passion for computing and software development.",
+      tag: "Education",
+      logo: "/portfolio/bcg.png",
+      period: "Jan 2015 – Jul 2024",
+      status: "Completed" as Status,
+      current: false,
+      accent: "#a78bfa",
+    },
+  ];
+  
+  const FILTERS: Filter[] = ["All", "Ongoing", "Completed"];
+  
+  /* ---------- small pieces ---------- */
+  
+  function Icon({ name }: { name: string }) {
+    const common = {
+      width: 26,
+      height: 26,
+      viewBox: "0 0 24 24",
+      fill: "none",
+      stroke: "#a78bfa",
+      strokeWidth: 1.8,
+      strokeLinecap: "round" as const,
+      strokeLinejoin: "round" as const,
+    };
+    switch (name) {
+      case "heart":
+        return (
+          <svg {...common} fill="#a78bfa" stroke="none">
+            <path d="M12 21s-6.7-4.35-9.33-8.11C.9 10.35 1.7 6.6 4.8 5.4c2-.78 4.2-.1 5.5 1.5l1.7 2 1.7-2c1.3-1.6 3.5-2.28 5.5-1.5 3.1 1.2 3.9 4.95 2.13 7.49C18.7 16.65 12 21 12 21z" />
+          </svg>
+        );
+      case "people":
+        return (
+          <svg {...common}>
+            <circle cx="9" cy="8" r="3.2" />
+            <path d="M2.8 19c.7-3 3.2-4.6 6.2-4.6s5.5 1.6 6.2 4.6" />
+            <circle cx="17" cy="9" r="2.4" />
+            <path d="M15.5 14.6c2.6.2 4.9 1.6 5.7 4.4" />
+          </svg>
+        );
+      case "grad":
+        return (
+          <svg {...common}>
+            <path d="M2 9.5 12 5l10 4.5-10 4.5L2 9.5z" />
+            <path d="M6.5 11.8v4.2c0 1.2 2.5 2.5 5.5 2.5s5.5-1.3 5.5-2.5v-4.2" />
+            <path d="M22 9.5v5" />
+          </svg>
+        );
+      case "briefcase":
+        return (
+          <svg {...common}>
+            <rect x="3" y="7.5" width="18" height="12" rx="2.5" />
+            <path d="M9 7.5V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5" />
+            <path d="M3 12.5h18" />
+          </svg>
+        );
+      default:
+        return null;
+    }
+  }
+  
+  function StatusPill({ status }: { status: Status }) {
+    const ongoing = status === "Ongoing";
+    return (
+      <span
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "6px",
+          fontFamily: "var(--font-jetbrains-mono)",
+          fontSize: "10px",
+          fontWeight: 700,
+          letterSpacing: ".08em",
+          color: ongoing ? "#34d399" : "var(--text-faint)",
+          background: ongoing ? "rgba(16,185,129,.1)" : "rgba(255,255,255,.04)",
+          border: `1px solid ${ongoing ? "rgba(16,185,129,.35)" : "var(--border)"}`,
+          borderRadius: "999px",
+          padding: "3px 10px",
+          whiteSpace: "nowrap",
+        }}
+      >
+        <span
+          style={{
+            width: 6,
+            height: 6,
+            borderRadius: "50%",
+            background: ongoing ? "#34d399" : "var(--text-faint)",
+            boxShadow: ongoing ? "0 0 6px rgba(52,211,153,.8)" : "none",
+          }}
+        />
+        {status.toUpperCase()}
+      </span>
+    );
+  }
+  
+  /* ---------- main component ---------- */
+  
+  export default function Timeline() {
+    const [filter, setFilter] = useState<Filter>("All");
+    const events = EVENTS.filter((e) => filter === "All" || e.status === filter);
+  
+    return (
+      <section id="timeline" className="relative overflow-hidden" style={{ padding: 0 }}>
+        <style>{`
+          #timeline .tl-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 44px;
+          }
+          #timeline .tl-filters {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 5px;
+          }
+          #timeline .tl-filter-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-family: var(--font-jetbrains-mono);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-dim);
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            padding: 6px 14px;
+            cursor: pointer;
+            transition: color .2s, background .2s, border-color .2s;
+            white-space: nowrap;
+          }
+          #timeline .tl-filter-btn:hover { color: var(--text); }
+          #timeline .tl-filter-btn.active {
+            color: var(--text);
+            background: rgba(139,92,246,.14);
+            border-color: rgba(167,139,250,.5);
+          }
+          #timeline .tl-row {
+            display: grid;
+            grid-template-columns: 168px 40px 1fr;
+            margin-bottom: 30px;
+          }
+          #timeline .tl-row:last-of-type { margin-bottom: 0; }
+          #timeline .tl-meta {
+            text-align: right;
+            padding-right: 14px;
+            padding-top: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 6px;
+          }
+          #timeline .tl-track {
+            position: relative;
+            display: flex;
+            justify-content: center;
+          }
+          #timeline .tl-track::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: -30px;
+            width: 1px;
+            background: linear-gradient(to bottom, var(--border), var(--border));
+            transform: translateX(-50%);
+          }
+          #timeline .tl-row:first-of-type .tl-track::before { top: 10px; }
+          #timeline .tl-row:last-of-type .tl-track::before { bottom: auto; height: 100%; }
+          #timeline .tl-dot {
+            position: relative;
+            z-index: 1;
+            margin-top: 8px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--surface);
+            border: 2px solid var(--border);
+            flex-shrink: 0;
+          }
+          #timeline .tl-card {
+            position: relative;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px 20px;
+            display: flex;
+            gap: 16px;
+            transition: border-color .2s, transform .2s, box-shadow .2s;
+          }
+          #timeline .tl-card:hover {
+            border-color: rgba(167,139,250,.5) !important;
+            box-shadow: 0 8px 30px rgba(0,0,0,.35);
+          }
+          #timeline .tl-iconbox {
+            flex-shrink: 0;
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 1);
+            border: 1px solid rgba(139,92,246,.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          #timeline .tl-badges {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+            padding-top: 2px;
+          }
+          #timeline .tl-meta-inline { display: none; }
+          #timeline .tl-footer {
+            margin-top: 40px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px 22px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+          }
+          #timeline .tl-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-dim);
+            background: rgba(255,255,255,.03);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 9px 14px;
+            transition: border-color .2s, color .2s;
+            white-space: nowrap;
+          }
+          #timeline .tl-chip:hover { border-color: rgba(167,139,250,.5); color: var(--text); }
+  
+          /* ---------- tablet ---------- */
+          @media (max-width: 900px) {
+            #timeline .tl-row { grid-template-columns: 120px 32px 1fr; }
+            #timeline .tl-meta { padding-right: 10px; }
+          }
+  
+          /* ---------- mobile ---------- */
+          @media (max-width: 680px) {
+            #timeline .tl-row { grid-template-columns: 26px 1fr; }
+            #timeline .tl-meta { display: none; }
+            #timeline .tl-meta-inline {
+              display: flex;
+              flex-wrap: wrap;
+              align-items: center;
+              gap: 8px;
+              margin-bottom: 2px;
+            }
+            #timeline .tl-card { flex-direction: column; gap: 12px; padding: 16px; }
+            #timeline .tl-card:hover { transform: none; }
+            #timeline .tl-iconbox { width: 46px; height: 46px; border-radius: 12px; }
+            #timeline .tl-badges {
+              flex-direction: row;
+              align-items: center;
+              flex-wrap: wrap;
+              justify-content: flex-start;
+              padding-top: 0;
+            }
+            #timeline .tl-track { justify-content: flex-start; padding-left: 5px; }
+            #timeline .tl-track::before { left: 12px; }
+          }
+        `}</style>
+  
+        <div
+          className="relative z-10 mx-auto w-full max-w-[1080px] px-5 sm:px-8"
+          style={{ minHeight: "100vh", paddingTop: "56px", paddingBottom: "72px" }}
+        >
+          {/* ---------- Header ---------- */}
+          <div className="tl-header">
+            <div className="flex flex-col gap-3">
+              
+              <div className="flex items-center gap-3">
+                {/* <Sparkle size={30} /> */}
+                <h2
+                  style={{
+                    fontFamily: "var(--font-space-grotesk)",
+                    fontWeight: 700,
+                    fontSize: "clamp(1.9rem, 4.5vw, 3rem)",
+                    lineHeight: 1.1,
+                    letterSpacing: "-0.02em",
+                    margin: 0,
+                  }}
+                >
+                  <span style={{ color: "#fff" }}>My </span>
+                  <span
+                    style={{
+                      background: "linear-gradient(120deg, #a78bfa 10%, #60a5fa 90%)",
+                      WebkitBackgroundClip: "text",
+                      backgroundClip: "text",
+                      color: "transparent",
+                    }}
+                  >
+                    Timeline
+                  </span>
+                </h2>
+              </div>
+              <p style={{ color: "var(--text-dim)", fontSize: "14px", lineHeight: 1.65, margin: 0 }}>
+                Key moments that shaped my journey.
+              </p>
+            </div>
+  
+            {/* Filter */}
+            <div className="tl-filters" role="tablist" aria-label="Filter timeline">
+              {FILTERS.map((f) => (
+                <button
+                  key={f}
+                  role="tab"
+                  aria-selected={filter === f}
+                  className={`tl-filter-btn ${filter === f ? "active" : ""}`}
+                  onClick={() => setFilter(f)}
+                >
+                  {f !== "All" && (
+                    <span
+                      style={{
+                        width: 7,
+                        height: 7,
+                        borderRadius: "50%",
+                        background: f === "Ongoing" ? "#34d399" : "var(--text-faint)",
+                        flexShrink: 0,
+                      }}
+                    />
+                  )}
+                  {f}
+                </button>
+              ))}
+            </div>
+          </div>
+  
+          {/* ---------- Timeline ---------- */}
+          <div>
+            {events.map((ev, i) => (
+              <div key={ev.title} className="tl-row">
+                {/* Left meta (desktop) */}
+                <div className="tl-meta">
+                  <span
+                    style={{
+                      fontFamily: "var(--font-space-grotesk)",
+                      fontSize: "18px",
+                      fontWeight: 700,
+                      color: ev.current ? ev.accent : "#a78bfa",
+                      lineHeight: 1,
+                    }}
+                  >
+                    {ev.year}
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: "var(--font-jetbrains-mono)",
+                      fontSize: "11px",
+                      color: "var(--text-faint)",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {ev.period}
+                  </span>
+                  <StatusPill status={ev.status} />
+                </div>
+  
+                {/* Track + dot */}
+                <div className="tl-track" aria-hidden="true">
+                  <span
+                    className="tl-dot"
+                    style={
+                      ev.current
+                        ? {
+                            background: `radial-gradient(circle at 35% 35%, #fff2, ${ev.accent})`,
+                            border: `2px solid ${ev.accent}`,
+                          }
+                        : undefined
+                    }
+                  />
+                </div>
+  
+                {/* Card */}
+                <article
+                  className="tl-card"
+                  style={ev.current ? { borderColor: `${ev.accent}66` } : undefined}
+                >
+                  {/* PRESENT ribbon */}
+                  {ev.current && (
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: "-13px",
+                        right: "14px",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "5px",
+                        fontFamily: "var(--font-jetbrains-mono)",
+                        fontSize: "10px",
+                        fontWeight: 700,
+                        letterSpacing: ".1em",
+                        color: "#fff",
+                        background:
+                          ev.accent === "#3b82f6"
+                            ? "linear-gradient(120deg, #3b82f6, #6366f1)"
+                            : "linear-gradient(120deg, #10b981, #059669)",
+                        borderRadius: "999px",
+                        padding: "4px 12px",
+                      }}
+                    >
+                      ✦ PRESENT
+                    </span>
+                  )}
+  
+                  <div className="tl-iconbox">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={ev.logo}
+                      alt={ev.org}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                        borderRadius: "10px",
+                        padding: "6px",
+                      }}
+                    />
+                  </div>
+  
+                  <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: "5px" }}>
+                    {/* Mobile-only meta */}
+                    <div className="tl-meta-inline">
+                      <span
+                        style={{
+                          fontFamily: "var(--font-space-grotesk)",
+                          fontSize: "14px",
+                          fontWeight: 700,
+                          color: ev.current ? ev.accent : "#a78bfa",
+                        }}
+                      >
+                        {ev.year}
+                      </span>
+                      <span
+                        style={{
+                          fontFamily: "var(--font-jetbrains-mono)",
+                          fontSize: "10.5px",
+                          color: "var(--text-faint)",
+                        }}
+                      >
+                        {ev.period}
+                      </span>
+                    </div>
+  
+                    <h3
+                      style={{
+                        fontFamily: "var(--font-space-grotesk)",
+                        fontSize: "17px",
+                        fontWeight: 700,
+                        color: "var(--text)",
+                        margin: 0,
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {ev.title}
+                    </h3>
+                    <span
+                      style={{
+                        fontSize: "13px",
+                        fontWeight: 600,
+                        color: ev.accent === "#3b82f6" ? "#60a5fa" : "#a78bfa",
+                      }}
+                    >
+                      {ev.org}
+                    </span>
+                    <p style={{ fontSize: "13px", color: "var(--text-dim)", lineHeight: 1.65, margin: 0 }}>
+                      {ev.desc}
+                    </p>
+                  </div>
+  
+                  <div className="tl-badges">
+                    <span
+                      style={{
+                        fontFamily: "var(--font-jetbrains-mono)",
+                        fontSize: "11px",
+                        fontWeight: 600,
+                        color: ev.accent === "#3b82f6" ? "#93c5fd" : "#d8c9fb",
+                        background:
+                          ev.accent === "#3b82f6" ? "rgba(59,130,246,.14)" : "rgba(139,92,246,.16)",
+                        border: `1px solid ${
+                          ev.accent === "#3b82f6" ? "rgba(59,130,246,.35)" : "rgba(139,92,246,.32)"
+                        }`,
+                        borderRadius: "8px",
+                        padding: "4px 12px",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {ev.tag}
+                    </span>
+                    <StatusPill status={ev.status} />
+                  </div>
+                </article>
+              </div>
+            ))}
+          </div>
+  
+          
+        </div>
+      </section>
+    );
+  }
+  

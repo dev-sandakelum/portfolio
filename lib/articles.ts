@@ -1,18 +1,24 @@
 /**
- * Article metadata type.
- * Posts are stored as individual TypeScript files in lib/post/{category}/{id}/index.ts
+ * articles.ts — isomorphic, client-safe
+ *
+ * Exports types, CATEGORIES, and metadata-only helpers.
+ * No `fs` or Node-only APIs — safe to import in "use client" components.
+ *
+ * For full articles with markdown content use articles.server.ts
+ * (Server Components / route handlers only).
  */
+
 export type ArticleMeta = {
   id: string;
   category: string;
-  title: string;          // Sinhala title
-  titleEn: string;        // English title
-  description: string;    // Sinhala description
-  descriptionEn: string;  // English description
-  date: string;           // ISO date string
+  title: string;         // Sinhala title
+  titleEn: string;       // English title
+  description: string;   // Sinhala description
+  descriptionEn: string; // English description
+  date: string;          // ISO date string
   tags: string[];
-  readingTime: number;    // minutes
-  coverImage?: string;    // optional cover image path (relative to /public)
+  readingTime: number;   // minutes
+  coverImage?: string;   // relative to /public
 };
 
 export type Article = {
@@ -23,12 +29,12 @@ export type Article = {
 export type CategoryInfo = {
   slug: string;
   label: string;
-  labelSi: string;        // Sinhala label
+  labelSi: string;
   description: string;
   icon: string;
-  color: string;          // Tailwind bg color class
-  textColor: string;      // Tailwind text color class
-  borderColor: string;    // Tailwind border color class
+  color: string;
+  textColor: string;
+  borderColor: string;
 };
 
 // ---------------------------------------------------------------------------
@@ -68,40 +74,28 @@ export const CATEGORIES: CategoryInfo[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Article registry — import each post module statically so Next.js can tree-shake
-// and we avoid any fs/glob at runtime (works in edge & static export too).
+// Metadata-only registry — add each new post's meta import here
+// No content strings → safe for client bundles
 // ---------------------------------------------------------------------------
-import * as github01 from "./post/github/01";
-import * as github02 from "./post/github/02";
-import * as azure01 from "./post/azure/01";
-import * as aiml01 from "./post/ai-ml/01";
+// import * as github01 from "./post/github/01";
+// import * as github02 from "./post/github/02";
+// import * as azure01 from "./post/azure/01";
+// import * as aiml01 from "./post/ai-ml/01";
 
-const ALL_POSTS: Article[] = [
-  { meta: github01.meta as ArticleMeta, content: github01.content },
-  { meta: github02.meta as ArticleMeta, content: github02.content },
-  { meta: azure01.meta as ArticleMeta, content: azure01.content },
-  { meta: aiml01.meta as ArticleMeta, content: aiml01.content },
+const ALL_META: ArticleMeta[] = [
+  // github01.meta as ArticleMeta,
+  // github02.meta as ArticleMeta,
+  // azure01.meta as ArticleMeta,
+  // aiml01.meta as ArticleMeta,
 ];
 
-// Sorted newest-first
-const SORTED_POSTS = [...ALL_POSTS].sort(
-  (a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime()
+const SORTED_META = [...ALL_META].sort(
+  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
 );
 
-// ---------------------------------------------------------------------------
-// Public helpers
-// ---------------------------------------------------------------------------
-
-export function getAllArticles(): Article[] {
-  return SORTED_POSTS;
-}
-
-export function getArticlesByCategory(category: string): Article[] {
-  return SORTED_POSTS.filter((p) => p.meta.category === category);
-}
-
-export function getArticle(category: string, id: string): Article | undefined {
-  return ALL_POSTS.find((p) => p.meta.category === category && p.meta.id === id);
+// Returns metadata only — use in client components and Blogs.tsx
+export function getAllArticles(): ArticleMeta[] {
+  return SORTED_META;
 }
 
 export function getCategoryInfo(slug: string): CategoryInfo | undefined {
@@ -109,8 +103,8 @@ export function getCategoryInfo(slug: string): CategoryInfo | undefined {
 }
 
 export function getCategoryCounts(): Record<string, number> {
-  return ALL_POSTS.reduce<Record<string, number>>((acc, p) => {
-    acc[p.meta.category] = (acc[p.meta.category] ?? 0) + 1;
+  return ALL_META.reduce<Record<string, number>>((acc, p) => {
+    acc[p.category] = (acc[p.category] ?? 0) + 1;
     return acc;
   }, {});
 }

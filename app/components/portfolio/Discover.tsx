@@ -104,9 +104,9 @@ function ResponsiveCard({
 export default function Discover() {
   return (
     <section
-      id="discover"
-      className="snap-section relative overflow-hidden"
-      style={{ padding: 0, background: "#09091a" }}
+      id="links"
+      className="relative overflow-hidden"
+      style={{ padding: 0, background: "#09091a", minHeight: "calc(100vh - var(--nav-h))" }}
     >
       {/* Ambient purple glow */}
       <div

@@ -6,8 +6,8 @@ export default function Hero() {
 
   return (
     <section
-      id="hero"
-      className="snap-section relative overflow-hidden"
+      id="home"
+      className="relative overflow-hidden"
       style={{ padding: 0 }}
     >
       {/* ── Dark base background ── */}

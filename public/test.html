@@ -1,0 +1,583 @@
+ <!DOCTYPE html>
+  <html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio — Articles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+Sinhala:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+  :root{
+    --bg:#08060d;
+    --bg2:#0d0a16;
+    --card:#131020;
+    --card2:#161226;
+    --border:rgba(255,255,255,.08);
+    --border2:rgba(167,139,250,.35);
+    --text:#f4f2fa;
+    --muted:#9d97ad;
+    --muted2:#736d84;
+    --purple:#a78bfa;
+    --purple2:#8b5cf6;
+    --purple3:#7c3aed;
+    --chip:#1c1830;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* ---------- ambient background ---------- */
+  .bg-fx{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .bg-fx .glow{position:absolute;border-radius:50%;filter:blur(90px)}
+  .glow-hero{width:640px;height:640px;top:-160px;left:50%;transform:translateX(-8%);background:radial-gradient(circle,rgba(124,58,237,.16),transparent 65%)}
+  .glow-right{width:420px;height:420px;top:220px;right:-200px;background:radial-gradient(circle,rgba(139,92,246,.14),transparent 65%)}
+  .glow-mid{width:560px;height:560px;top:820px;left:50%;transform:translateX(-50%);background:radial-gradient(circle,rgba(124,58,237,.10),transparent 65%)}
+  .glow-bottom{width:520px;height:520px;bottom:-220px;left:-180px;background:radial-gradient(circle,rgba(139,92,246,.10),transparent 65%)}
+  .crescent{position:absolute;border-radius:50%;pointer-events:none}
+  .crescent-1{width:120px;height:120px;top:130px;left:-60px;box-shadow:22px -10px 26px -6px rgba(225,29,72,.55);transform:rotate(-25deg)}
+  .crescent-2{width:90px;height:90px;top:460px;left:-50px;box-shadow:18px -8px 22px -5px rgba(190,24,93,.45);transform:rotate(-20deg)}
+  .planet-br{position:absolute;width:260px;height:260px;border-radius:50%;top:340px;right:-150px;background:radial-gradient(circle at 30% 30%,rgba(139,92,246,.28),rgba(20,12,38,.9) 60%);box-shadow:0 0 80px rgba(139,92,246,.25)}
+  .dot{position:absolute;border-radius:50%}
+  .dot-blue{width:9px;height:9px;top:355px;left:66px;background:#38bdf8;box-shadow:0 0 14px 4px rgba(56,189,248,.7)}
+  .star{position:absolute;width:2px;height:2px;background:#cdc5ee;border-radius:50%;opacity:.7;animation:twinkle 3.4s ease-in-out infinite}
+  @keyframes twinkle{0%,100%{opacity:.15}50%{opacity:.85}}
+  /* ---------- layout ---------- */
+  .wrap{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:0 24px}
+  /* ---------- nav ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(8,6,13,.82);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  .nav{max-width:1180px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .brand{display:flex;align-items:center;gap:9px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;letter-spacing:.2px;color:var(--text);text-decoration:none}
+  .brand .spark{color:var(--purple);font-size:15px;line-height:1;filter:drop-shadow(0 0 6px rgba(167,139,250,.8))}
+  .nav-links{display:flex;align-items:center;gap:34px;list-style:none}
+  .nav-links a{color:#c9c4d8;text-decoration:none;font-size:14px;font-weight:500;transition:color .2s}
+  .nav-links a:hover{color:#fff}
+  .btn-contact{
+    font-family:'Inter',sans-serif;font-size:13.5px;font-weight:600;color:#fff;text-decoration:none;
+    background:linear-gradient(135deg,#9333ea,#7c3aed);
+    padding:10px 20px;border-radius:999px;border:1px solid rgba(255,255,255,.15);
+    box-shadow:0 4px 22px rgba(124,58,237,.45);transition:transform .2s,box-shadow .2s;display:inline-block;white-space:nowrap;
+  }
+  .btn-contact:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(124,58,237,.6)}
+  .nav-toggle{display:none;background:none;border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:18px;padding:6px 10px;cursor:pointer}
+  /* ---------- hero ---------- */
+  .hero{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:12px;padding:56px 0 8px;min-height:480px}
+  .badge{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:2.5px;color:#d6cdf5;
+    border:1px solid rgba(167,139,250,.4);border-radius:999px;padding:8px 16px;margin-bottom:28px;
+    background:rgba(124,58,237,.08);
+  }
+  .badge .spark{color:var(--purple)}
+  .hero h1{
+    font-family:'Space Grotesk','Inter',sans-serif;
+    font-size:clamp(38px,5.4vw,52px);font-weight:700;line-height:1.12;letter-spacing:-.5px;margin-bottom:24px;
+  }
+  .hero h1 .accent{
+    background:linear-gradient(100deg,#a78bfa,#8b5cf6 60%,#c084fc);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 22px rgba(139,92,246,.35));
+  }
+  .hero p{color:var(--muted);font-size:15px;line-height:1.7;max-width:340px}
+  .hero-art{position:relative;display:flex;justify-content:center;align-items:center}
+  .hero-art img{width:100%;max-width:540px;height:auto;display:block;filter:drop-shadow(0 24px 60px rgba(124,58,237,.25));animation:float 6s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  /* ---------- stats ---------- */
+  .stats{display:grid;grid-template-columns:repeat(4,max-content);gap:14px;margin:34px 0 40px}
+  .stat{
+    display:flex;align-items:center;gap:12px;
+    background:rgba(22,18,38,.65);border:1px solid var(--border);border-radius:14px;padding:14px 20px;
+    backdrop-filter:blur(6px);
+    transition:border-color .2s,transform .2s;
+  }
+  .stat:hover{border-color:var(--border2);transform:translateY(-2px)}
+  .stat svg{width:20px;height:20px;color:var(--purple);flex:none}
+  .stat b{display:block;font-size:16px;font-weight:700;line-height:1.15}
+  .stat span{display:block;font-size:12px;color:var(--muted)}
+  /* ---------- search ---------- */
+  .search{
+    display:flex;align-items:center;gap:12px;
+    background:rgba(22,18,38,.6);border:1px solid var(--border);border-radius:16px;
+    padding:16px 18px;margin-bottom:26px;transition:border-color .2s,box-shadow .2s;
+  }
+  .search:focus-within{border-color:var(--border2);box-shadow:0 0 0 3px rgba(139,92,246,.12)}
+  .search svg{width:18px;height:18px;color:var(--muted);flex:none}
+  .search input{
+    flex:1;background:none;border:none;outline:none;color:var(--text);
+    font-family:'JetBrains Mono',monospace;font-size:13.5px;font-weight:600;
+  }
+  .search input::placeholder{color:#d8d3e6}
+  .kbd{
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);
+    border:1px solid var(--border);border-radius:7px;padding:4px 9px;background:rgba(255,255,255,.03);white-space:nowrap;
+  }
+  /* ---------- filter pills ---------- */
+  .pills{display:flex;flex-wrap:wrap;gap:11px;margin-bottom:36px}
+  .pill{
+    font-size:12.5px;font-weight:600;color:#cfc9de;cursor:pointer;
+    border:1px solid var(--border);border-radius:999px;padding:9px 19px;background:rgba(22,18,38,.5);
+    transition:all .2s;user-select:none;
+  }
+  .pill:hover{border-color:var(--border2);color:#fff}
+  .pill.active{
+    background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;border-color:transparent;
+    box-shadow:0 4px 18px rgba(124,58,237,.45);
+  }
+  /* ---------- featured ---------- */
+  .featured{
+    position:relative;display:grid;grid-template-columns:1fr 1.05fr;overflow:hidden;
+    border:1px solid rgba(167,139,250,.45);border-radius:18px;margin-bottom:64px;
+    background:linear-gradient(120deg,#151024 0%,#120e20 55%,#0d0a18 100%);
+    box-shadow:0 0 40px rgba(124,58,237,.15), inset 0 0 60px rgba(124,58,237,.05);
+  }
+  .featured-body{padding:38px 8px 38px 34px;position:relative;z-index:2}
+  .f-label{
+    display:flex;align-items:center;gap:9px;
+    font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:2.5px;color:#c4a9f7;margin-bottom:18px;
+  }
+  .f-label .spark{font-size:13px;filter:drop-shadow(0 0 6px rgba(167,139,250,.9))}
+  .featured h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(26px,3.4vw,34px);font-weight:700;letter-spacing:-.4px;margin-bottom:12px}
+  .f-sub{font-family:'Noto Sans Sinhala','Inter',sans-serif;color:var(--muted);font-size:14px;margin-bottom:20px}
+  .f-meta{display:flex;align-items:center;flex-wrap:wrap;gap:10px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--muted);margin-bottom:28px}
+  .f-meta svg{width:13px;height:13px;vertical-align:-2px;margin-right:5px;color:var(--muted)}
+  .f-meta .sep{color:var(--muted2)}
+  .tag{
+    font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;color:#d8c9fb;
+    background:rgba(139,92,246,.18);border:1px solid rgba(139,92,246,.3);border-radius:6px;padding:4px 9px;white-space:nowrap;
+  }
+  .btn-read{
+    display:inline-flex;align-items:center;gap:9px;
+    font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#fff;text-decoration:none;
+    background:linear-gradient(135deg,#a78bfa,#8b5cf6);
+    padding:13px 24px;border-radius:999px;
+    box-shadow:0 6px 26px rgba(139,92,246,.5);transition:transform .2s,box-shadow .2s;
+  }
+  .btn-read:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(139,92,246,.65)}
+  .btn-read .arr{transition:transform .2s}
+  .btn-read:hover .arr{transform:translateX(3px)}
+  .featured-art{position:relative;min-height:230px}
+  .featured-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+  .featured-art::before{
+    content:"";position:absolute;inset:0;z-index:1;
+    background:linear-gradient(90deg,#131020 0%,rgba(19,16,32,0) 30%);
+  }
+  /* ---------- sections ---------- */
+  .sec-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px}
+  .sec-head h3{font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;letter-spacing:-.2px}
+  .view-all{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:13px;font-weight:600;color:var(--purple);text-decoration:none;transition:gap .2s;white-space:nowrap;
+  }
+  .view-all:hover{gap:11px}
+  /* ---------- categories ---------- */
+  .cats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:64px}
+  .cat{
+    background:rgba(22,18,38,.55);border:1px solid var(--border);border-radius:16px;padding:20px 18px 16px;
+    display:flex;flex-direction:column;text-decoration:none;color:var(--text);
+    transition:border-color .2s,transform .2s,box-shadow .2s;
+  }
+  .cat:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 12px 34px rgba(124,58,237,.16)}
+  .cat-icon{
+    width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;
+    background:linear-gradient(135deg,#a78bfa,#7c3aed);
+    box-shadow:0 6px 20px rgba(124,58,237,.4);
+  }
+  .cat-icon svg{width:22px;height:22px;color:#fff}
+  .cat b{font-family:'Space Grotesk',sans-serif;font-size:15.5px;font-weight:700;margin-bottom:7px}
+  .cat .desc{font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.5}
+  .cat-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,255,255,.06);padding-top:12px}
+  .cat-foot span{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)}
+  .arr-circle{
+    width:26px;height:26px;border-radius:50%;border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;color:#cfc9de;font-size:12px;
+    transition:all .2s;flex:none;
+  }
+  .cat:hover .arr-circle,.acard:hover .arr-circle{background:linear-gradient(135deg,#a78bfa,#7c3aed);border-color:transparent;color:#fff}
+  /* ---------- latest articles ---------- */
+  .articles{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:64px}
+  .acard{
+    display:flex;gap:14px;align-items:stretch;
+    background:rgba(22,18,38,.55);border:1px solid var(--border);border-radius:16px;padding:11px;
+    text-decoration:none;color:var(--text);
+    transition:border-color .2s,transform .2s,box-shadow .2s;
+  }
+  .acard:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 12px 34px rgba(124,58,237,.16)}
+  .acard .thumb{width:82px;border-radius:11px;overflow:hidden;flex:none;position:relative}
+  .acard .thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s}
+  .acard:hover .thumb img{transform:scale(1.06)}
+  .acard .body{display:flex;flex-direction:column;flex:1;min-width:0;padding:5px 2px 4px 0}
+  .acard h4{font-size:13.5px;font-weight:700;line-height:1.35;margin-bottom:9px}
+  .acard .tag{align-self:flex-start;margin-bottom:auto}
+  .acard .meta{
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+    font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:12px;
+  }
+  .acard .meta .sep{color:var(--muted2)}
+  /* ---------- newsletter ---------- */
+  .newsletter{
+    position:relative;overflow:hidden;
+    display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:30px;
+    background:linear-gradient(120deg,rgba(30,22,52,.7),rgba(18,14,32,.85));
+    border:1px solid var(--border);border-radius:20px;padding:34px 38px;margin-bottom:70px;
+  }
+  .newsletter .mail-art{width:62px;height:auto;filter:drop-shadow(0 8px 26px rgba(168,85,247,.55));border-radius:8px}
+  .newsletter h3{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin-bottom:8px}
+  .newsletter p{font-size:13px;color:var(--muted);line-height:1.65;max-width:260px}
+  .sub-form{display:flex;align-items:center;gap:0;background:rgba(10,8,18,.8);border:1px solid var(--border);border-radius:999px;padding:5px 5px 5px 20px;min-width:300px}
+  .sub-form input{
+    flex:1;background:none;border:none;outline:none;color:var(--text);
+    font-family:'JetBrains Mono',monospace;font-size:12.5px;min-width:120px;
+  }
+  .sub-form input::placeholder{color:#a49dbb}
+  .btn-sub{
+    font-size:13px;font-weight:700;color:#fff;border:none;cursor:pointer;
+    background:linear-gradient(135deg,#a78bfa,#7c3aed);
+    padding:11px 22px;border-radius:999px;box-shadow:0 4px 18px rgba(124,58,237,.5);
+    transition:transform .2s;white-space:nowrap;font-family:'Inter',sans-serif;
+  }
+  .btn-sub:hover{transform:translateY(-1px)}
+  .orb{position:absolute;border-radius:50%;pointer-events:none}
+  .orb-1{width:56px;height:56px;top:16px;right:64px;background:radial-gradient(circle at 32% 30%,#c084fc,#6d28d9 70%);box-shadow:0 10px 30px rgba(139,92,246,.5)}
+  .orb-2{width:30px;height:30px;bottom:22px;right:26px;background:radial-gradient(circle at 32% 30%,#a855f7,#581c87 70%);box-shadow:0 8px 22px rgba(139,92,246,.4)}
+  /* ---------- pagination / footer ---------- */
+  .pagination{display:flex;align-items:center;justify-content:center;gap:18px;padding:6px 0 10px;position:relative}
+  .pg-btn{
+    display:inline-flex;align-items:center;gap:9px;
+    font-size:13.5px;font-weight:600;color:#e6e2f2;text-decoration:none;
+    background:rgba(22,18,38,.6);border:1px solid var(--border);border-radius:999px;padding:12px 24px;
+    transition:all .2s;
+  }
+  .pg-btn:hover{border-color:var(--border2);color:#fff;transform:translateY(-1px)}
+  .pg-spark{
+    width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;
+    background:linear-gradient(135deg,#a78bfa,#6d28d9);
+    box-shadow:0 0 0 6px rgba(124,58,237,.18),0 8px 26px rgba(124,58,237,.55);
+    color:#fff;font-size:18px;text-decoration:none;transition:transform .25s;
+  }
+  .pg-spark:hover{transform:rotate(90deg) scale(1.05)}
+  .made{position:absolute;right:0;font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .made .heart{color:var(--purple);font-size:14px}
+  .n-logo{
+    position:fixed;left:22px;bottom:22px;z-index:40;
+    width:46px;height:46px;border-radius:50%;
+    background:#0b0912;border:1.5px solid rgba(255,255,255,.7);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:20px;color:#fff;text-decoration:none;
+  }
+  footer{padding-bottom:56px}
+  /* ---------- responsive ---------- */
+  @media (max-width:960px){
+    .cats{grid-template-columns:repeat(3,1fr)}
+    .articles{grid-template-columns:repeat(2,1fr)}
+    .stats{grid-template-columns:repeat(2,max-content)}
+  }
+  @media (max-width:820px){
+    .hero{grid-template-columns:1fr;padding-top:40px;min-height:0}
+    .hero-art{order:-1;margin-bottom:8px}
+    .hero-art img{max-width:420px}
+    .featured{grid-template-columns:1fr}
+    .featured-art{min-height:240px;order:-1}
+    .featured-art::before{background:linear-gradient(0deg,#131020 0%,rgba(19,16,32,0) 45%)}
+    .featured-body{padding:28px 26px 32px}
+    .newsletter{grid-template-columns:1fr;gap:20px;text-align:left}
+    .sub-form{min-width:0;width:100%}
+  }
+  @media (max-width:640px){
+    .nav-links{
+      display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:0;
+      background:rgba(10,8,16,.97);border-bottom:1px solid var(--border);padding:8px 0;
+    }
+    .nav-links.open{display:flex}
+    .nav-links li{width:100%}
+    .nav-links a{display:block;padding:13px 28px}
+    .nav-toggle{display:block}
+    .cats{grid-template-columns:1fr 1fr}
+    .articles{grid-template-columns:1fr}
+    .stats{grid-template-columns:1fr 1fr;width:100%}
+    .stat{padding:12px 16px}
+    .made{position:static;margin-top:18px;width:100%;justify-content:center}
+    .pagination{flex-wrap:wrap}
+    .pg-btn{padding:11px 18px;font-size:12.5px}
+    .n-logo{width:40px;height:40px;font-size:17px;left:14px;bottom:14px}
+  }
+  @media (max-width:440px){
+    .cats{grid-template-columns:1fr}
+    .pills{gap:8px}
+    .pill{padding:8px 14px;font-size:12px}
+    .kbd{display:none}
+  }
+  </style>
+  </head>
+  <body>
+  
+  <!-- ambient background -->
+  <div class="bg-fx" aria-hidden="true">
+    <div class="glow glow-hero"></div>
+    <div class="glow glow-right"></div>
+    <div class="glow glow-mid"></div>
+    <div class="glow glow-bottom"></div>
+    <div class="crescent crescent-1"></div>
+    <div class="crescent crescent-2"></div>
+    <div class="planet-br"></div>
+    <div class="dot dot-blue"></div>
+    <div id="stars"></div>
+  </div>
+  
+  <!-- nav -->
+  <header>
+    <nav class="nav">
+      <a class="brand" href="#"><span class="spark">✦</span>Portfolio</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Discover</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+      <div style="display:flex;align-items:center;gap:12px">
+        <a class="btn-contact" href="#">Get in touch</a>
+        <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+      </div>
+    </nav>
+  </header>
+  
+  <main class="wrap">
+  
+    <!-- hero -->
+    <section class="hero">
+      <div>
+        <div class="badge"><span class="spark">✦</span>ARTICLES</div>
+        <h1>Explore.<br>Learn.<br><span class="accent">Share Knowledge.</span></h1>
+        <p>In-depth articles on GitHub, Azure, AI/ML,<br>Web Development and modern technologies.</p>
+      </div>
+      <div class="hero-art">
+        <img src="{{HERO}}" alt="Glowing 3D book surrounded by floating tech icons">
+      </div>
+    </section>
+  
+    <!-- stats -->
+    <div class="stats">
+      <div class="stat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <div><b>18</b><span>Articles</span></div>
+      </div>
+      <div class="stat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        <div><b>6</b><span>Categories</span></div>
+      </div>
+      <div class="stat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <div><b>14K+</b><span>Readers</span></div>
+      </div>
+      <div class="stat">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <div><b>Weekly</b><span>Updates</span></div>
+      </div>
+    </div>
+  
+    <!-- search -->
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search articles...">
+      <span class="kbd">⌘ K</span>
+    </div>
+  
+    <!-- filter pills -->
+    <div class="pills" id="pills">
+      <span class="pill active">All</span>
+      <span class="pill">GitHub</span>
+      <span class="pill">Azure</span>
+      <span class="pill">AI / ML</span>
+      <span class="pill">Web Development</span>
+      <span class="pill">Career</span>
+      <span class="pill">Tools</span>
+      <span class="pill">Linux</span>
+    </div>
+  
+    <!-- featured article -->
+    <article class="featured">
+      <div class="featured-body">
+        <div class="f-label"><span class="spark">✦</span>FEATURED ARTICLE</div>
+        <h2>AI/ML Basics #1</h2>
+        <p class="f-sub">කෘතිම බුද්ධියේ ඉතිහාසය සහ විකාශනයන් ගැන</p>
+        <div class="f-meta">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>12 min read</span>
+          <span class="sep">·</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Jun 13, 2025</span>
+          <span class="sep">·</span>
+          <span class="tag">AI / ML</span>
+        </div>
+        <a class="btn-read" href="#">Read Article <span class="arr">→</span></a>
+      </div>
+      <div class="featured-art">
+        <img src="{{BRAIN}}" alt="Glowing purple 3D brain on a podium">
+      </div>
+    </article>
+  
+    <!-- browse by categories -->
+    <section>
+      <div class="sec-head">
+        <h3>Browse by Categories</h3>
+        <a class="view-all" href="#">View all categories <span>→</span></a>
+      </div>
+      <div class="cats">
+        <a class="cat" href="#">
+          <div class="cat-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55v-1.94c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.7 1.25 3.35.96.1-.75.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.66.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.55A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg></div>
+          <b>GitHub</b>
+          <span class="desc">Git, Actions, CI/CD</span>
+          <div class="cat-foot"><span>12 Articles</span><span class="arr-circle">→</span></div>
+        </a>
+        <a class="cat" href="#">
+          <div class="cat-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg></div>
+          <b>Azure</b>
+          <span class="desc">Cloud, Services, DevOps</span>
+          <div class="cat-foot"><span>8 Articles</span><span class="arr-circle">→</span></div>
+        </a>
+        <a class="cat" href="#">
+          <div class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="2"/><circle cx="9" cy="12" r="1" fill="currentColor"/><circle cx="15" cy="12" r="1" fill="currentColor"/><path d="M9 16h6"/><path d="M12 7V4"/><circle cx="12" cy="3" r="1" fill="currentColor"/></svg></div>
+          <b>AI / ML</b>
+          <span class="desc">Artificial Intelligence</span>
+          <div class="cat-foot"><span>6 Articles</span><span class="arr-circle">→</span></div>
+        </a>
+        <a class="cat" href="#">
+          <div class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+          <b>Web Dev</b>
+          <span class="desc">Next.js, React, TS</span>
+          <div class="cat-foot"><span>5 Articles</span><span class="arr-circle">→</span></div>
+        </a>
+        <a class="cat" href="#">
+          <div class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+          <b>Tools</b>
+          <span class="desc">Productivity &amp; More</span>
+          <div class="cat-foot"><span>7 Articles</span><span class="arr-circle">→</span></div>
+        </a>
+      </div>
+    </section>
+  
+    <!-- latest articles -->
+    <section>
+      <div class="sec-head">
+        <h3>Latest Articles</h3>
+        <a class="view-all" href="#">View all articles <span>→</span></a>
+      </div>
+      <div class="articles">
+        <a class="acard" href="#">
+          <div class="thumb"><img src="{{T1}}" alt="Advanced GitHub Actions Tips"></div>
+          <div class="body">
+            <h4>Advanced GitHub<br>Actions Tips</h4>
+            <span class="tag">GitHub</span>
+            <div class="meta"><span>Jun 11, 2025 <span class="sep">·</span> 8 min read</span><span class="arr-circle">→</span></div>
+          </div>
+        </a>
+        <a class="acard" href="#">
+          <div class="thumb"><img src="{{T2}}" alt="Deploy Next.js on Azure App Service"></div>
+          <div class="body">
+            <h4>Deploy Next.js on<br>Azure App Service</h4>
+            <span class="tag">Azure</span>
+            <div class="meta"><span>Jun 9, 2025 <span class="sep">·</span> 10 min read</span><span class="arr-circle">→</span></div>
+          </div>
+        </a>
+        <a class="acard" href="#">
+          <div class="thumb"><img src="{{T3}}" alt="Understanding Neural Networks"></div>
+          <div class="body">
+            <h4>Understanding<br>Neural Networks</h4>
+            <span class="tag">AI / ML</span>
+            <div class="meta"><span>Jun 7, 2025 <span class="sep">·</span> 15 min read</span><span class="arr-circle">→</span></div>
+          </div>
+        </a>
+        <a class="acard" href="#">
+          <div class="thumb"><img src="{{T4}}" alt="TypeScript Tips You Should Know"></div>
+          <div class="body">
+            <h4>TypeScript Tips<br>You Should Know</h4>
+            <span class="tag">Web Dev</span>
+            <div class="meta"><span>Jun 5, 2025 <span class="sep">·</span> 6 min read</span><span class="arr-circle">→</span></div>
+          </div>
+        </a>
+        <a class="acard" href="#">
+          <div class="thumb"><img src="{{T5}}" alt="Linux Commands Every Dev Should Know"></div>
+          <div class="body">
+            <h4>Linux Commands<br>Every Dev Should Know</h4>
+            <span class="tag">Linux</span>
+            <div class="meta"><span>Jun 3, 2025 <span class="sep">·</span> 7 min read</span><span class="arr-circle">→</span></div>
+          </div>
+        </a>
+        <a class="acard" href="#">
+          <div class="thumb"><img src="{{T6}}" alt="My Developer Productivity Stack"></div>
+          <div class="body">
+            <h4>My Developer<br>Productivity Stack</h4>
+            <span class="tag">Tools</span>
+            <div class="meta"><span>Jun 1, 2025 <span class="sep">·</span> 9 min read</span><span class="arr-circle">→</span></div>
+          </div>
+        </a>
+      </div>
+    </section>
+  
+    <!-- newsletter -->
+    <section class="newsletter">
+      <img class="mail-art" src="{{MAIL}}" alt="Glowing purple envelope">
+      <div>
+        <h3>Stay Updated</h3>
+        <p>Get the latest articles and insights straight to your inbox every week.</p>
+      </div>
+      <form class="sub-form" onsubmit="event.preventDefault();this.querySelector('input').value='';this.querySelector('input').placeholder='Subscribed! ✦';">
+        <input type="email" placeholder="Enter your email" required>
+        <button class="btn-sub" type="submit">Subscribe</button>
+      </form>
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+    </section>
+  
+    <!-- pagination -->
+    <footer>
+      <div class="pagination">
+        <a class="pg-btn" href="#"><span>←</span> Newer Articles</a>
+        <a class="pg-spark" href="#">✦</a>
+        <a class="pg-btn" href="#">Older Articles <span>→</span></a>
+        <span class="made">Made with <span class="heart">♡</span></span>
+      </div>
+    </footer>
+  
+  </main>
+  
+  <a class="n-logo" href="#" aria-label="N">N</a>
+  
+  <script>
+  // twinkling stars
+  (function(){
+    var c=document.getElementById('stars');
+    for(var i=0;i<70;i++){
+      var s=document.createElement('div');
+      s.className='star';
+      s.style.left=Math.random()*100+'%';
+      s.style.top=Math.random()*1500+'px';
+      s.style.animationDelay=(Math.random()*3.4)+'s';
+      var sz=Math.random()<.25?3:2;
+      s.style.width=s.style.height=sz+'px';
+      c.appendChild(s);
+    }
+  })();
+  // filter pills
+  document.getElementById('pills').addEventListener('click',function(e){
+    if(!e.target.classList.contains('pill'))return;
+    this.querySelectorAll('.pill').forEach(function(p){p.classList.remove('active')});
+    e.target.classList.add('active');
+  });
+  // mobile nav
+  document.getElementById('navToggle').addEventListener('click',function(){
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+  // ⌘K focuses search
+  document.addEventListener('keydown',function(e){
+    if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();document.querySelector('.search input').focus();}
+  });
+  </script>
+  </body>
+  </html>
