@@ -35,13 +35,11 @@ function readContent(category: string, id: string): string {
 // Post metadata — same order as articles.ts
 // ---------------------------------------------------------------------------
 import * as github01 from "./post/github/01";
-import * as github02 from "./post/github/02";
 import * as azure01 from "./post/azure/01";
 import * as aiml01 from "./post/ai-ml/01";
 
 const ALL_META: ArticleMeta[] = [
   github01.meta as ArticleMeta,
-  github02.meta as ArticleMeta,
   azure01.meta as ArticleMeta,
   aiml01.meta as ArticleMeta,
 ];
