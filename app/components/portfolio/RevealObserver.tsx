@@ -4,9 +4,6 @@ import { useEffect } from "react";
 
 export default function RevealObserver() {
   useEffect(() => {
-    const container = document.getElementById("snap-root");
-    const els = document.querySelectorAll<HTMLElement>(".reveal");
-
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -16,15 +13,26 @@ export default function RevealObserver() {
           }
         });
       },
-      {
-        root: container ?? null,
-        threshold: 0.12,
-      }
+      { threshold: 0.12 }
     );
 
-    els.forEach((el) => io.observe(el));
+    // Observe all current .reveal elements
+    function observeAll() {
+      document.querySelectorAll<HTMLElement>(".reveal:not(.in)").forEach((el) => {
+        io.observe(el);
+      });
+    }
 
-    return () => io.disconnect();
+    observeAll();
+
+    // Re-scan whenever new nodes are added to the document (tab switches)
+    const mo = new MutationObserver(() => observeAll());
+    mo.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      io.disconnect();
+      mo.disconnect();
+    };
   }, []);
 
   return null;
