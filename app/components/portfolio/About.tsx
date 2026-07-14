@@ -1,7 +1,6 @@
 "use client";
   
   import Image from "next/image";
-  import Sparkle from "./Sparkle";
   import { PERSON } from "@/lib/portfolio/data";
   
   /* ───────────────────────── Icons (inline SVG) ───────────────────────── */
@@ -647,20 +646,23 @@
               line-height: 1.75;
             }
   
-            /* Meta → 3 chips in a row */
+            /* Meta → chips in a row, wrap if needed */
             .about-meta {
-              display: grid;
-              grid-template-columns: repeat(3, 1fr);
+              display: flex;
+              flex-wrap: wrap;
               gap: 10px;
             }
             .about-meta-row {
-              gap: 9px;
+              flex: 1 1 calc(33% - 10px);
+              min-width: 90px;
+              gap: 8px;
               background: var(--surface);
               border: 1px solid var(--border);
               border-radius: 14px;
-              padding: 12px 10px;
-              font-size: 12px;
-              line-height: 1.3;
+              padding: 10px 12px;
+              font-size: 12.5px;
+              line-height: 1.35;
+              white-space: nowrap;
             }
             .m-only-meta {
               display: flex;
