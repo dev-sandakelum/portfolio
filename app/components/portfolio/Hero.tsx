@@ -124,30 +124,7 @@ export default function Hero() {
             </HoverLink>
           </div>
 
-          {/* Scroll hint — desktop only (left-aligned under CTAs) */}
-          <div className="reveal mt-10 hidden items-center gap-3 md:flex">
-            <div
-              className="flex h-[30px] w-[18px] items-start justify-center rounded-full border pt-[5px]"
-              style={{ borderColor: "rgba(255,255,255,0.18)" }}
-            >
-              <div
-                className="h-[8px] w-[2px] rounded-full"
-                style={{
-                  background: "rgba(255,255,255,0.28)",
-                  animation: "float 1.8s ease-in-out infinite",
-                }}
-              />
-            </div>
-            <span
-              className="text-[11px] tracking-[0.22em] uppercase"
-              style={{
-                color: "rgba(255,255,255,0.28)",
-                fontFamily: "var(--font-jetbrains-mono)",
-              }}
-            >
-              {HERO.scrollHint}
-            </span>
-          </div>
+
         </div>
 
         {/* ═══════════ VIDEO ═══════════ */}
@@ -198,30 +175,7 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* ── Mobile-only scroll hint — centered below video ── */}
-        <div className="flex flex-col items-center gap-2 pb-6 pt-2 md:hidden">
-          <div
-            className="flex h-[30px] w-[18px] items-start justify-center rounded-full border pt-[5px]"
-            style={{ borderColor: "rgba(255,255,255,0.18)" }}
-          >
-            <div
-              className="h-[8px] w-[2px] rounded-full"
-              style={{
-                background: "rgba(255,255,255,0.28)",
-                animation: "float 1.8s ease-in-out infinite",
-              }}
-            />
-          </div>
-          <span
-            className="text-[10px] tracking-[0.22em] uppercase"
-            style={{
-              color: "rgba(255,255,255,0.28)",
-              fontFamily: "var(--font-jetbrains-mono)",
-            }}
-          >
-            {HERO.scrollHint}
-          </span>
-        </div>
+
 
       </div>
     </section>

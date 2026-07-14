@@ -35,7 +35,7 @@ export const HERO = {
   statusPill:   "Open to collaborations",   // overrides PERSON.status if needed
   ctaPrimary:   { label: "Explore ↓",   href: "#contact" },
   ctaSecondary: { label: "Contact me",  href: "#contact" },
-  scrollHint:   "Scroll to explore",
+  scrollHint:   "",
   videoSrc:     "/portfolio/hero2.mp4",
 };
 
