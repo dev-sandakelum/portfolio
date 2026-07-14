@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Sparkle from "./components/portfolio/Sparkle";
 import Hero from "./components/portfolio/Hero";
 import About from "./components/portfolio/About";
@@ -21,10 +22,34 @@ const TABS = [
 
 type TabId = (typeof TABS)[number]["id"];
 
-export default function HomePage() {
-  const [active, setActive]       = useState<TabId>("home");
-  const [menuOpen, setMenuOpen]   = useState(false);
-  const drawerRef                 = useRef<HTMLDivElement>(null);
+const TAB_IDS = TABS.map((t) => t.id) as readonly string[];
+
+function isTabId(v: string | null): v is TabId {
+  return v !== null && TAB_IDS.includes(v);
+}
+
+// ── Inner component that uses useSearchParams (must be inside Suspense) ────────
+
+function HomePageInner() {
+  const router     = useRouter();
+  const pathname   = usePathname();
+  const searchParams = useSearchParams();
+
+  const initialTab = (() => {
+    const t = searchParams.get("t");
+    return isTabId(t) ? t : "home";
+  })();
+
+  const [active, setActive]     = useState<TabId>(initialTab);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const drawerRef               = useRef<HTMLDivElement>(null);
+
+  // Sync active tab when URL ?t= changes externally (e.g. back/forward)
+  useEffect(() => {
+    const t = searchParams.get("t");
+    const tab = isTabId(t) ? t : "home";
+    setActive(tab);
+  }, [searchParams]);
 
   // Theme sync for connect tab
   useEffect(() => {
@@ -56,8 +81,16 @@ export default function HomePage() {
   const isConnect = active === "connect";
 
   function navigate(id: TabId) {
-    setActive(id);
     setMenuOpen(false);
+    // Update URL with ?t= (replace so tab switches don't pile up in history)
+    const params = new URLSearchParams(searchParams.toString());
+    if (id === "home") {
+      params.delete("t");
+    } else {
+      params.set("t", id);
+    }
+    const qs = params.toString();
+    router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
   }
 
   return (
@@ -424,5 +457,15 @@ export default function HomePage() {
 
       <RevealObserver />
     </>
+  );
+}
+
+// ── Public export: wraps inner component in Suspense (required for useSearchParams) ──
+
+export default function HomePage() {
+  return (
+    <Suspense>
+      <HomePageInner />
+    </Suspense>
   );
 }
