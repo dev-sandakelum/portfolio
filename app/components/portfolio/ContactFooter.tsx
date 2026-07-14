@@ -7,9 +7,10 @@ import { PERSON, CONTACT } from "@/lib/portfolio/data";
 export default function ContactFooter() {
   return (
     <section
-      className="relative"
+      className="relative overflow-hidden md:overflow-visible
+                 [min-height:calc(100svh_-_var(--nav-h))] md:[min-height:calc(100vh_-_var(--nav-h))]"
       id="contact"
-      style={{ justifyContent: "center", minHeight: "calc(100vh - var(--nav-h))", display: "flex", flexDirection: "column", alignItems: "center" }}
+      style={{ justifyContent: "center", display: "flex", flexDirection: "column", alignItems: "center" }}
     >
       {/* ── Observes visibility, flips data-theme, renders fixed bg ── */}
       <ContactThemeSync />

@@ -7,7 +7,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative overflow-hidden"
+      className="relative overflow-hidden md:overflow-visible"
       style={{ padding: 0 }}
     >
       {/* ── Dark base background ── */}
@@ -19,11 +19,11 @@ export default function Hero() {
       ══════════════════════════════════════════════ */}
       <div
         className="relative z-10 mx-auto w-full px-6 py-6
-                   md:grid md:max-w-[1080px] md:items-center md:px-8"
+                   md:grid md:max-w-[1080px] md:items-center md:px-8
+                   [min-height:calc(100svh_-_var(--nav-h))] md:[min-height:calc(100vh_-_var(--nav-h))]"
         style={{
           /* desktop only */
           gridTemplateColumns: "1fr 1fr",
-          minHeight: "calc(100vh - var(--nav-h))",
         }}
       >
 
