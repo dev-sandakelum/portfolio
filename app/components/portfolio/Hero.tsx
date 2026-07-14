@@ -32,7 +32,7 @@ export default function Hero() {
 
           {/* Status pill */}
           <div
-            className="reveal mb-6 inline-flex w-fit items-center gap-2 rounded-full border px-4 py-[7px] text-[13px]"
+            className="reveal mb-6 hidden min-[380px]:inline-flex w-fit items-center gap-2 rounded-full border px-4 py-[7px] text-[13px]"
             style={{
               background: "rgba(255,255,255,0.055)",
               borderColor: "rgba(255,255,255,0.16)",
