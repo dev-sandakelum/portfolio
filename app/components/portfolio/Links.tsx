@@ -201,7 +201,9 @@ function ChainGraphic() {
 // ── section ───────────────────────────────────────────────────────────────────
 
 export default function Links() {
-  const visibleLinks = (linksData as LinkEntry[]).filter((l) => !l.hidden);
+  const visibleLinks = (linksData as LinkEntry[]).filter(
+    (l) => !l.hidden && !l.code.startsWith("h/")
+  );
 
   // Split into social (top-level codes without "/") and resource links
   const social = visibleLinks.filter((l) => !l.code.includes("/"));
