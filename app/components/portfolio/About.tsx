@@ -196,17 +196,17 @@
                 </div>
               </div>
   
-              <div className="about-divider" />
+              {/* <div className="about-divider" /> */}
   
               {/* MSA badge */}
-              <div className="about-msa">
+              {/* <div className="about-msa">
                 <IconBadge>{Icon.msa}</IconBadge>
                 <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
                   <span className="about-msa-title">Microsoft Student Ambassador</span>
                   <span className="about-msa-sub">Empowering the student tech community</span>
                 </div>
                 <span className="about-msa-chevron" aria-hidden>{Icon.chevron}</span>
-              </div>
+              </div> */}
             </div>
   
             {/* ══════════ RIGHT — Text, stats, CV ══════════ */}
