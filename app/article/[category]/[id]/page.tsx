@@ -21,9 +21,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category, id } = await params;
   const article = getArticle(category, id);
   if (!article) return {};
+  const { meta } = article;
+  const url = `/article/${category}/${id}`;
   return {
-    title: `${article.meta.titleEn} — Hasitha Sandakelum`,
-    description: article.meta.descriptionEn,
+    title: meta.titleEn,
+    description: meta.descriptionEn,
+    keywords: meta.tags,
+    alternates: { canonical: url },
+    openGraph: {
+      title: `${meta.titleEn} — Hasitha Sandakelum`,
+      description: meta.descriptionEn,
+      url,
+      type: "article",
+      publishedTime: meta.date,
+      authors: ["Hasitha Sandakelum"],
+      tags: meta.tags,
+      ...(meta.coverImage ? { images: [{ url: meta.coverImage, width: 1200, height: 630, alt: meta.titleEn }] } : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${meta.titleEn} — Hasitha Sandakelum`,
+      description: meta.descriptionEn,
+      ...(meta.coverImage ? { images: [meta.coverImage] } : {}),
+    },
   };
 }
 

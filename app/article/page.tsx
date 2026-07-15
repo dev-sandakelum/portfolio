@@ -8,8 +8,23 @@ import HoverLink from "@/app/components/portfolio/ui/HoverLink";
 import HoverCard from "@/app/components/portfolio/ui/HoverCard";
 
 export const metadata: Metadata = {
-  title: "Articles — Hasitha Sandakelum",
-  description: "Tech articles in Sinhala and English covering GitHub, Azure, AI/ML and more.",
+  title: "Articles",
+  description:
+    "Tech articles in Sinhala and English covering GitHub, Azure, AI/ML and more — by Hasitha Sandakelum.",
+  alternates: { canonical: "/article" },
+  openGraph: {
+    title: "Articles — Hasitha Sandakelum",
+    description:
+      "Tech articles in Sinhala and English covering GitHub, Azure, AI/ML and more.",
+    url: "/article",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Articles — Hasitha Sandakelum",
+    description:
+      "Tech articles in Sinhala and English covering GitHub, Azure, AI/ML and more.",
+  },
 };
 
 function formatDate(iso: string) {

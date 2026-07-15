@@ -19,8 +19,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cat = getCategoryInfo(category);
   if (!cat) return {};
   return {
-    title: `${cat.label} — Hasitha Sandakelum`,
-    description: cat.description,
+    title: cat.label,
+    description: `${cat.description} — articles by Hasitha Sandakelum in Sinhala and English.`,
+    alternates: { canonical: `/article/${category}` },
+    openGraph: {
+      title: `${cat.label} — Hasitha Sandakelum`,
+      description: `${cat.description} — articles in Sinhala and English.`,
+      url: `/article/${category}`,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${cat.label} — Hasitha Sandakelum`,
+      description: `${cat.description} — articles in Sinhala and English.`,
+    },
   };
 }
 
