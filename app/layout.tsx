@@ -111,14 +111,14 @@ export default function RootLayout({
       lang="en"
       className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} ${inter.variable} antialiased`}
       style={{ 
-        background: "#08090d",
-        color: "#eef0f4",
+        background: "var(--bg, #08090d)",
+        color: "var(--text, #eef0f4)",
       }}
     >
       <body
         style={{ 
-          background: "#08090d",
-          color: "#eef0f4",
+          background: "transparent",
+          color: "var(--text, #eef0f4)",
           fontFamily: "var(--font-inter), sans-serif",
         }}
         suppressHydrationWarning
