@@ -27,6 +27,19 @@
   --nav-cta-bg:    linear-gradient(135deg,#7c3aed 0%,#9c6ade 100%);
   --nav-cta-color: #ffffff;
   --nav-cta-shadow:0 0 20px rgba(124,58,237,0.45);
+  /* Overlay / drawer surfaces */
+  --scrim:                 rgba(0, 0, 0, 0.6);
+  --drawer-bg:             rgba(12, 13, 24, 0.98);
+  --drawer-shadow:         -20px 0 60px rgba(0, 0, 0, 0.38);
+  --drawer-active-bg:      rgba(124, 58, 237, 0.2);
+  --drawer-active-border:  rgba(255, 255, 255, 0.1);
+  --drawer-active-text:    #e9d5ff;
+  --drawer-icon-bg:        rgba(255, 255, 255, 0.07);
+  --drawer-icon-active-bg: linear-gradient(135deg, #8b5cf6, #6d28d9);
+  --drawer-icon-shadow:    0 4px 14px rgba(124, 58, 237, 0.5);
+  --drawer-chevron:        #a78bfa;
+  --pill-bg:               rgba(124, 58, 237, 0.15);
+  --pill-color:            #c4b5fd;
 }
 
 /* ── Contact page theme override ─────────────────── */
@@ -37,10 +50,13 @@
   --surface-hover: rgba(220, 209, 247, 0.38);
   --border:        rgba(134, 103, 194, 0.28);
   --text:          #2D1B6B;
-  --text-dim:      #2D1B6B;
+  --text-dim:      #4A3B80;
   --text-faint:    #7a6aaa;
+  --blue:          #5B6FD6;
   --purple:        #8667C2;
   --pink:          #E573AB;
+  --gold:          #C98A3C;
+  --green:         #4F9E7F;
   --gradient:      linear-gradient(120deg, #8667C2 0%, #E573AB 100%);
   /* Nav-specific */
   --nav-bg:        transparent;
@@ -48,6 +64,19 @@
   --nav-cta-bg:    rgba(255, 255, 255, 0.88);
   --nav-cta-color: #2D1B6B;
   --nav-cta-shadow:0 0 20px rgba(180,140,255,0.35);
+  /* Overlay / drawer surfaces */
+  --scrim:                 rgba(45, 27, 107, 0.45);
+  --drawer-bg:             rgba(232, 223, 252, 0.97);
+  --drawer-shadow:         -20px 0 60px rgba(45, 27, 107, 0.28);
+  --drawer-active-bg:      rgba(134, 103, 194, 0.18);
+  --drawer-active-border:  rgba(134, 103, 194, 0.35);
+  --drawer-active-text:    #2D1B6B;
+  --drawer-icon-bg:        rgba(45, 27, 107, 0.08);
+  --drawer-icon-active-bg: linear-gradient(135deg, #8667C2, #E573AB);
+  --drawer-icon-shadow:    0 4px 14px rgba(134, 103, 194, 0.45);
+  --drawer-chevron:        #8667C2;
+  --pill-bg:               rgba(255, 255, 255, 0.55);
+  --pill-color:            #2D1B6B;
 }
 
 /* Smooth transition on all themed elements */
@@ -69,15 +98,17 @@ nav, .orb {
   }
 
   html {
-    background: #08090d;
-    color: #eef0f4;
+    background: var(--bg);
+    color: var(--text);
     /* smooth scrolling handled by JS for snap; native for anchor clicks */
     scroll-behavior: smooth;
   }
 
+  /* Transparent so the html background (and the fixed contact image
+     layered above it) stays visible through the page. */
   body {
-    background: #08090d;
-    color: #eef0f4;
+    background: transparent;
+    color: var(--text);
     overflow-x: hidden;
     font-family: var(--font-inter, sans-serif);
     line-height: 1.6;
@@ -306,10 +337,11 @@ body {
 }
 
 /* ── Contact fixed full-viewport background ──────── */
+/* Sits above the page background but below the nav (z-50) and main (z-10). */
 .contact-bg-fixed {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: 0;
   background-image: url('/portfolio/contact_bg.jpg');
   background-size: cover;
   background-position: center;

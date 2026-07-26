@@ -35,21 +35,13 @@ function HomePageInner() {
   const pathname   = usePathname();
   const searchParams = useSearchParams();
 
-  const initialTab = (() => {
+  const active: TabId = (() => {
     const t = searchParams.get("t");
     return isTabId(t) ? t : "home";
   })();
 
-  const [active, setActive]     = useState<TabId>(initialTab);
   const [menuOpen, setMenuOpen] = useState(false);
   const drawerRef               = useRef<HTMLDivElement>(null);
-
-  // Sync active tab when URL ?t= changes externally (e.g. back/forward)
-  useEffect(() => {
-    const t = searchParams.get("t");
-    const tab = isTabId(t) ? t : "home";
-    setActive(tab);
-  }, [searchParams]);
 
   // Theme sync for connect tab
   useEffect(() => {
@@ -60,16 +52,14 @@ function HomePageInner() {
     }
   }, [active]);
 
-  // Close drawer on outside tap
+  // Close drawer with the Escape key (the backdrop handles outside taps)
   useEffect(() => {
     if (!menuOpen) return;
-    const handler = (e: MouseEvent) => {
-      if (drawerRef.current && !drawerRef.current.contains(e.target as Node)) {
-        setMenuOpen(false);
-      }
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuOpen(false);
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
   }, [menuOpen]);
 
   // Lock body scroll when drawer is open
@@ -77,8 +67,6 @@ function HomePageInner() {
     document.body.style.overflow = menuOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
-
-  const isConnect = active === "connect";
 
   function navigate(id: TabId) {
     setMenuOpen(false);
@@ -148,12 +136,8 @@ function HomePageInner() {
                     border: "none",
                     cursor: "pointer",
                     transition: "all .18s",
-                    background: isActive
-                      ? isConnect ? "rgba(134,103,194,.18)" : "rgba(124,58,237,.18)"
-                      : "transparent",
-                    color: isActive
-                      ? isConnect ? "var(--purple)" : "#c4b5fd"
-                      : undefined,
+                    background: isActive ? "var(--pill-bg)" : "transparent",
+                    color: isActive ? "var(--pill-color)" : undefined,
                     position: "relative",
                   }}
                 >
@@ -168,9 +152,7 @@ function HomePageInner() {
                         width: "20px",
                         height: "2px",
                         borderRadius: "2px",
-                        background: isConnect
-                          ? "linear-gradient(90deg,#8667C2,#E573AB)"
-                          : "linear-gradient(90deg,#8b5cf6,#a78bfa)",
+                        background: "var(--gradient)",
                       }}
                     />
                   )}
@@ -196,8 +178,8 @@ function HomePageInner() {
                 fontFamily: "var(--font-space-grotesk)",
                 fontSize: "12px",
                 fontWeight: 600,
-                color: isConnect ? "var(--purple)" : "#c4b5fd",
-                background: isConnect ? "rgba(134,103,194,.15)" : "rgba(124,58,237,.15)",
+                color: "var(--pill-color)",
+                background: "var(--pill-bg)",
                 borderRadius: "999px",
                 padding: "3px 10px",
               }}
@@ -215,9 +197,7 @@ function HomePageInner() {
                 height: "36px",
                 borderRadius: "10px",
                 border: "1px solid var(--border)",
-                background: menuOpen
-                  ? isConnect ? "rgba(134,103,194,.18)" : "rgba(124,58,237,.18)"
-                  : "var(--surface)",
+                background: menuOpen ? "var(--drawer-active-bg)" : "var(--surface)",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
@@ -277,7 +257,7 @@ function HomePageInner() {
             position: "fixed",
             inset: 0,
             zIndex: 40,
-            background: "rgba(0,0,0,0.6)",
+            background: "var(--scrim)",
             backdropFilter: "blur(6px)",
             WebkitBackdropFilter: "blur(6px)",
             opacity: menuOpen ? 1 : 0,
@@ -289,47 +269,64 @@ function HomePageInner() {
           className="md:!hidden"
         />
 
-        {/* Bottom drawer */}
+        {/* Right-side mobile drawer */}
         <div
           ref={drawerRef}
           role="dialog"
           aria-modal="true"
           aria-label="Navigation menu"
+          aria-hidden={!menuOpen}
           className="md:!hidden"
           style={{
             position: "fixed",
+            top: "var(--nav-h)",
             bottom: 0,
-            left: 0,
             right: 0,
+            width: "min(86vw, 360px)",
             zIndex: 50,
-            borderRadius: "24px 24px 0 0",
-            background: isConnect
-              ? "rgba(140,100,210,0.97)"
-              : "rgba(12,9,26,0.97)",
+            borderRadius: "20px 0 0 0",
+            background: "var(--drawer-bg)",
             backdropFilter: "blur(28px)",
             WebkitBackdropFilter: "blur(28px)",
             border: "1px solid var(--border)",
+            borderRight: "none",
             borderBottom: "none",
-            padding: "12px 20px 40px",
-            transform: menuOpen ? "translateY(0)" : "translateY(100%)",
-            transition: "transform .38s cubic-bezier(0.32,0.72,0,1)",
-            willChange: "transform",
+            padding: "24px 18px max(24px, env(safe-area-inset-bottom))",
+            transform: menuOpen ? "translateX(0)" : "translateX(100%)",
+            opacity: menuOpen ? 1 : 0,
+            pointerEvents: menuOpen ? "auto" : "none",
+            transition: "transform .3s cubic-bezier(0.22,1,0.36,1), opacity .2s ease",
+            willChange: "transform, opacity",
+            overflowY: "auto",
+            boxShadow: "var(--drawer-shadow)",
           }}
         >
-          {/* Drag handle */}
+          {/* Drawer heading */}
           <div
             style={{
-              width: "40px",
-              height: "4px",
-              borderRadius: "2px",
-              background: "rgba(255,255,255,0.18)",
-              margin: "0 auto 22px",
+              marginBottom: "20px",
+              padding: "0 8px 16px",
+              borderBottom: "1px solid var(--border)",
             }}
-          />
+          >
+            <div
+              style={{
+                fontFamily: "var(--font-space-grotesk)",
+                fontSize: "18px",
+                fontWeight: 700,
+                color: "var(--text)",
+              }}
+            >
+              Navigation
+            </div>
+            <div style={{ marginTop: "4px", fontSize: "12px", color: "var(--text-faint)" }}>
+              Choose where you want to go
+            </div>
+          </div>
 
           {/* Nav items */}
           <nav aria-label="Mobile navigation">
-            <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "4px" }}>
+            <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "6px" }}>
               {TABS.map((tab) => {
                 const isActive = active === tab.id;
                 return (
@@ -341,14 +338,10 @@ function HomePageInner() {
                         display: "flex",
                         alignItems: "center",
                         gap: "14px",
-                        padding: "12px 14px",
-                        borderRadius: "14px",
-                        border: `1px solid ${isActive ? "rgba(255,255,255,0.1)" : "transparent"}`,
-                        background: isActive
-                          ? isConnect
-                            ? "rgba(255,255,255,0.15)"
-                            : "rgba(124,58,237,.2)"
-                          : "transparent",
+                        padding: "10px 12px",
+                        borderRadius: "12px",
+                        border: `1px solid ${isActive ? "var(--drawer-active-border)" : "transparent"}`,
+                        background: isActive ? "var(--drawer-active-bg)" : "transparent",
                         cursor: "pointer",
                         transition: "all .18s",
                         textAlign: "left",
@@ -357,24 +350,18 @@ function HomePageInner() {
                       {/* Icon badge */}
                       <span
                         style={{
-                          width: "38px",
-                          height: "38px",
-                          borderRadius: "11px",
+                          width: "36px",
+                          height: "36px",
+                          borderRadius: "10px",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
                           fontSize: "18px",
                           flexShrink: 0,
                           background: isActive
-                            ? isConnect
-                              ? "linear-gradient(135deg,#8667C2,#E573AB)"
-                              : "linear-gradient(135deg,#8b5cf6,#6d28d9)"
-                            : "rgba(255,255,255,0.07)",
-                          boxShadow: isActive
-                            ? isConnect
-                              ? "0 4px 14px rgba(134,103,194,.45)"
-                              : "0 4px 14px rgba(124,58,237,.5)"
-                            : "none",
+                            ? "var(--drawer-icon-active-bg)"
+                            : "var(--drawer-icon-bg)",
+                          boxShadow: isActive ? "var(--drawer-icon-shadow)" : "none",
                           transition: "all .18s",
                         }}
                       >
@@ -387,9 +374,7 @@ function HomePageInner() {
                           fontFamily: "var(--font-space-grotesk)",
                           fontSize: "15px",
                           fontWeight: isActive ? 700 : 500,
-                          color: isActive
-                            ? isConnect ? "#fff" : "#e9d5ff"
-                            : "var(--text-dim)",
+                          color: isActive ? "var(--drawer-active-text)" : "var(--text-dim)",
                           transition: "color .18s",
                           flex: 1,
                         }}
@@ -402,10 +387,7 @@ function HomePageInner() {
                         <svg
                           width="16" height="16" viewBox="0 0 24 24"
                           fill="none" stroke="currentColor" strokeWidth="2.5"
-                          style={{
-                            color: isConnect ? "rgba(255,255,255,0.6)" : "#a78bfa",
-                            flexShrink: 0,
-                          }}
+                          style={{ color: "var(--drawer-chevron)", flexShrink: 0 }}
                         >
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                         </svg>
@@ -430,13 +412,9 @@ function HomePageInner() {
               fontFamily: "var(--font-space-grotesk)",
               fontSize: "14px",
               fontWeight: 700,
-              background: isConnect
-                ? "rgba(255,255,255,0.9)"
-                : "linear-gradient(135deg,#7c3aed,#9c6ade)",
-              color: isConnect ? "#2D1B6B" : "#fff",
-              boxShadow: isConnect
-                ? "0 4px 20px rgba(180,140,255,.3)"
-                : "0 4px 20px rgba(124,58,237,.45)",
+              background: "var(--nav-cta-bg)",
+              color: "var(--nav-cta-color)",
+              boxShadow: "var(--nav-cta-shadow)",
               transition: "all .2s",
             }}
           >

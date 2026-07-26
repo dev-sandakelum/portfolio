@@ -1,10 +1,37 @@
 "use client";
   
   import { useState } from "react";
-  import Sparkle from "./Sparkle";
   
   type Status = "Ongoing" | "Completed";
-  type Filter = "All" | Status;
+  type Category = "Experience" | "Education" | "Volunteering";
+  type Filter = "All" | Category;
+
+  const CATEGORY_META: Record<
+    Category,
+    { icon: string; accent: string; chipBg: string; chipBorder: string; chipColor: string }
+  > = {
+    Experience: {
+      icon: "briefcase",
+      accent: "#a78bfa",
+      chipBg: "rgba(139,92,246,.16)",
+      chipBorder: "rgba(139,92,246,.32)",
+      chipColor: "#d8c9fb",
+    },
+    Education: {
+      icon: "grad",
+      accent: "#10b981",
+      chipBg: "rgba(16,185,129,.12)",
+      chipBorder: "rgba(16,185,129,.35)",
+      chipColor: "#6ee7b7",
+    },
+    Volunteering: {
+      icon: "heart",
+      accent: "#3b82f6",
+      chipBg: "rgba(59,130,246,.14)",
+      chipBorder: "rgba(59,130,246,.35)",
+      chipColor: "#93c5fd",
+    },
+  };
   
   const EVENTS = [
     {
@@ -12,7 +39,7 @@
       title: "Microsoft Student Ambassador",
       org: "Microsoft Learn",
       desc: "Selected as a Microsoft Student Ambassador, learning, building, and empowering the student developer community through Microsoft technologies.",
-      tag: "Microsoft",
+      category: "Volunteering" as Category,
       logo: "/portfolio/msLearn/LevelAlpha.png",
       period: "Jul 2026 – Present",
       status: "Ongoing" as Status,
@@ -24,7 +51,7 @@
       title: "ICT Representative",
       org: "University of Ruhuna",
       desc: "Served as the ICT Representative, supporting student activities and acting as a bridge between students and the department.",
-      tag: "Leadership",
+      category: "Volunteering" as Category,
       logo: "/portfolio/ruhuna.png",
       period: "Jul 2025 – Mar 2026",
       status: "Completed" as Status,
@@ -36,7 +63,7 @@
       title: "Bachelor of ICT",
       org: "University of Ruhuna",
       desc: "Currently pursuing a Bachelor's degree in Information & Communication Technology at the University of Ruhuna.",
-      tag: "Education",
+      category: "Education" as Category,
       logo: "/portfolio/ruhuna.png",
       period: "Jul 2025 – Present",
       status: "Ongoing" as Status,
@@ -48,7 +75,7 @@
       title: "Associate Trainee",
       org: "OREL IT",
       desc: "Completed a six-month Associate Trainee program at OREL IT, gaining practical experience in software development and industry workflows.",
-      tag: "Career",
+      category: "Experience" as Category,
       logo: "/portfolio/orel.png",
       period: "Aug 2024 – Jan 2025",
       status: "Completed" as Status,
@@ -60,7 +87,7 @@
       title: "A/L — Information Technology",
       org: "Bandaranayake College, Gampaha",
       desc: "Studied Information Technology at Advanced Level, building the foundational knowledge that sparked my passion for computing and software development.",
-      tag: "Education",
+      category: "Education" as Category,
       logo: "/portfolio/bcg.png",
       period: "Jan 2015 – Jul 2024",
       status: "Completed" as Status,
@@ -69,14 +96,14 @@
     },
   ];
   
-  const FILTERS: Filter[] = ["All", "Ongoing", "Completed"];
+  const FILTERS: Filter[] = ["All", "Experience", "Education", "Volunteering"];
   
   /* ---------- small pieces ---------- */
   
-  function Icon({ name }: { name: string }) {
+  function Icon({ name, size = 26 }: { name: string; size?: number }) {
     const common = {
-      width: 26,
-      height: 26,
+      width: size,
+      height: size,
       viewBox: "0 0 24 24",
       fill: "none",
       stroke: "#a78bfa",
@@ -159,7 +186,7 @@
   
   export default function Timeline() {
     const [filter, setFilter] = useState<Filter>("All");
-    const events = EVENTS.filter((e) => filter === "All" || e.status === filter);
+    const events = EVENTS.filter((e) => filter === "All" || e.category === filter);
   
     return (
       <section id="timeline" className="relative overflow-hidden" style={{ padding: 0 }}>
@@ -169,7 +196,8 @@
             flex-wrap: wrap;
             align-items: flex-start;
             justify-content: space-between;
-            gap: 16px;
+            column-gap: 16px;
+            row-gap: 5px;
             margin-bottom: 44px;
           }
           #timeline .tl-filters {
@@ -252,15 +280,35 @@
             border: 1px solid var(--border);
             border-radius: 16px;
             padding: 18px 20px;
-            display: flex;
+            display: grid;
+            grid-template-columns: 56px minmax(0, 1fr) auto;
+            grid-template-areas:
+              "icon body badges"
+              "icon description badges";
             gap: 16px;
             transition: border-color .2s, transform .2s, box-shadow .2s;
           }
+          #timeline .tl-card-body {
+            grid-area: body;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+          }
+          #timeline .tl-description {
+            grid-area: description;
+            font-size: 13px;
+            color: var(--text-dim);
+            line-height: 1.65;
+            margin: 0;
+          }
+          #timeline .tl-card-accent { display: none; }
           #timeline .tl-card:hover {
             border-color: rgba(167,139,250,.5) !important;
             box-shadow: 0 8px 30px rgba(0,0,0,.35);
           }
           #timeline .tl-iconbox {
+            grid-area: icon;
             flex-shrink: 0;
             width: 56px;
             height: 56px;
@@ -272,6 +320,7 @@
             justify-content: center;
           }
           #timeline .tl-badges {
+            grid-area: badges;
             flex-shrink: 0;
             display: flex;
             flex-direction: column;
@@ -315,32 +364,139 @@
   
           /* ---------- mobile ---------- */
           @media (max-width: 680px) {
-            #timeline .tl-row { grid-template-columns: 26px 1fr; }
+            #timeline .tl-container {
+              min-height: auto !important;
+              padding: 32px 16px 88px !important;
+            }
+            #timeline .tl-header {
+              flex-direction: column;
+              gap: 20px;
+              margin-bottom: 24px;
+            }
+            #timeline .tl-heading {
+              font-size: clamp(1.75rem, 9vw, 2.35rem) !important;
+            }
+            #timeline .tl-subtitle {
+              max-width: 32ch;
+              font-size: 13px !important;
+            }
+            #timeline .tl-filters {
+              display: grid;
+              grid-template-columns: repeat(2, minmax(0, 1fr));
+              width: 100%;
+              gap: 8px;
+              padding: 0;
+              border: 0;
+              background: transparent;
+            }
+            #timeline .tl-filter-btn {
+              justify-content: center;
+              min-height: 44px;
+              padding: 10px 8px;
+              font-size: 11px;
+              gap: 6px;
+              min-width: 0;
+              background: var(--surface);
+              border-color: var(--border);
+              border-radius: 12px;
+            }
+            #timeline .tl-filter-btn.active {
+              background: linear-gradient(135deg, rgba(139,92,246,.22), rgba(59,130,246,.12));
+              border-color: rgba(167,139,250,.65);
+              box-shadow: inset 0 0 0 1px rgba(167,139,250,.08);
+            }
+            #timeline .tl-row {
+              display: block;
+              margin-bottom: 14px;
+            }
             #timeline .tl-meta { display: none; }
             #timeline .tl-meta-inline {
               display: flex;
+              align-items: center;
+              justify-content: flex-start;
+              gap: 10px;
+              margin-top: 4px;
+              margin-bottom: 0;
+              order: 2;
+            }
+            #timeline .tl-meta-row {
+              display: flex;
               flex-wrap: wrap;
               align-items: center;
-              gap: 8px;
-              margin-bottom: 2px;
+              gap: 6px;
             }
-            #timeline .tl-card { flex-direction: column; gap: 12px; padding: 16px; }
+            #timeline .tl-meta-dates {
+              font-family: var(--font-jetbrains-mono);
+              font-size: 10px;
+              color: var(--text-faint);
+              gap: 6px;
+            }
+            #timeline .tl-track { display: none; }
+            #timeline .tl-card {
+              display: grid;
+              grid-template-columns: 44px minmax(0, 1fr);
+              grid-template-areas:
+                "icon body"
+                "description description"
+                "badges badges";
+              gap: 12px;
+              padding: 16px;
+              overflow: hidden;
+              align-items: start;
+              border-radius: 18px;
+              background:
+                linear-gradient(145deg, rgba(255,255,255,.025), transparent 45%),
+                var(--surface);
+            }
             #timeline .tl-card:hover { transform: none; }
-            #timeline .tl-iconbox { width: 46px; height: 46px; border-radius: 12px; }
+            #timeline .tl-present-floating { display: none !important; }
+            #timeline .tl-card-accent {
+              display: block;
+              position: absolute;
+              inset: 0 auto 0 0;
+              width: 3px;
+            }
+            #timeline .tl-iconbox {
+              grid-area: icon;
+              width: 44px;
+              height: 44px;
+              border-radius: 12px;
+            }
+            #timeline .tl-card-body {
+              grid-area: body;
+              min-width: 0;
+              gap: 4px;
+            }
+            #timeline .tl-card-body h3 {
+              font-size: 16px !important;
+              line-height: 1.25 !important;
+            }
+            #timeline .tl-description {
+              grid-area: description;
+              font-size: 12.5px;
+              line-height: 1.6;
+              padding-top: 2px;
+            }
             #timeline .tl-badges {
+              grid-area: badges;
               flex-direction: row;
               align-items: center;
               flex-wrap: wrap;
               justify-content: flex-start;
-              padding-top: 0;
+              gap: 8px;
+              padding-top: 12px;
+              margin-top: 0;
+              border-top: 1px solid var(--border);
             }
-            #timeline .tl-track { justify-content: flex-start; padding-left: 5px; }
-            #timeline .tl-track::before { left: 12px; }
+          }
+
+          @media (min-width: 681px) {
+            #timeline .tl-present-floating { position: absolute; top: -13px; right: 14px; }
           }
         `}</style>
   
         <div
-          className="relative z-10 mx-auto w-full max-w-[1080px] px-5 sm:px-8"
+          className="tl-container relative z-10 mx-auto w-full max-w-[1080px] px-5 sm:px-8"
           style={{ minHeight: "100vh", paddingTop: "56px", paddingBottom: "72px" }}
         >
           {/* ---------- Header ---------- */}
@@ -350,6 +506,7 @@
               <div className="flex items-center gap-3">
                 {/* <Sparkle size={30} /> */}
                 <h2
+                  className="tl-heading"
                   style={{
                     fontFamily: "var(--font-space-grotesk)",
                     fontWeight: 700,
@@ -372,13 +529,13 @@
                   </span>
                 </h2>
               </div>
-              <p style={{ color: "var(--text-dim)", fontSize: "14px", lineHeight: 1.65, margin: 0 }}>
-                Key moments that shaped my journey.
+              <p className="tl-subtitle" style={{ color: "var(--text-dim)", fontSize: "14px", lineHeight: 1.65, margin: 0 }}>
+                Experience, education, and volunteering across my journey.
               </p>
             </div>
   
             {/* Filter */}
-            <div className="tl-filters" role="tablist" aria-label="Filter timeline">
+            <div className="tl-filters" role="tablist" aria-label="Filter timeline by category">
               {FILTERS.map((f) => (
                 <button
                   key={f}
@@ -388,15 +545,7 @@
                   onClick={() => setFilter(f)}
                 >
                   {f !== "All" && (
-                    <span
-                      style={{
-                        width: 7,
-                        height: 7,
-                        borderRadius: "50%",
-                        background: f === "Ongoing" ? "#34d399" : "var(--text-faint)",
-                        flexShrink: 0,
-                      }}
-                    />
+                    <Icon name={CATEGORY_META[f].icon} size={14} />
                   )}
                   {f}
                 </button>
@@ -406,7 +555,7 @@
   
           {/* ---------- Timeline ---------- */}
           <div>
-            {events.map((ev, i) => (
+            {events.map((ev) => (
               <div key={ev.title} className="tl-row">
                 {/* Left meta (desktop) */}
                 <div className="tl-meta">
@@ -454,13 +603,12 @@
                   className="tl-card"
                   style={ev.current ? { borderColor: `${ev.accent}66` } : undefined}
                 >
+                  <span className="tl-card-accent" style={{ background: ev.accent }} aria-hidden="true" />
                   {/* PRESENT ribbon */}
                   {ev.current && (
                     <span
+                      className="tl-present-floating"
                       style={{
-                        position: "absolute",
-                        top: "-13px",
-                        right: "14px",
                         display: "inline-flex",
                         alignItems: "center",
                         gap: "5px",
@@ -480,7 +628,7 @@
                       ✦ PRESENT
                     </span>
                   )}
-  
+
                   <div className="tl-iconbox">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
@@ -496,30 +644,14 @@
                     />
                   </div>
   
-                  <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: "5px" }}>
+                  <div className="tl-card-body">
                     {/* Mobile-only meta */}
                     <div className="tl-meta-inline">
-                      <span
-                        style={{
-                          fontFamily: "var(--font-space-grotesk)",
-                          fontSize: "14px",
-                          fontWeight: 700,
-                          color: ev.current ? ev.accent : "#a78bfa",
-                        }}
-                      >
-                        {ev.year}
-                      </span>
-                      <span
-                        style={{
-                          fontFamily: "var(--font-jetbrains-mono)",
-                          fontSize: "10.5px",
-                          color: "var(--text-faint)",
-                        }}
-                      >
-                        {ev.period}
-                      </span>
+                      <div className="tl-meta-row tl-meta-dates">
+                        <span>{ev.period}</span>
+                      </div>
                     </div>
-  
+
                     <h3
                       style={{
                         fontFamily: "var(--font-space-grotesk)",
@@ -541,10 +673,9 @@
                     >
                       {ev.org}
                     </span>
-                    <p style={{ fontSize: "13px", color: "var(--text-dim)", lineHeight: 1.65, margin: 0 }}>
-                      {ev.desc}
-                    </p>
                   </div>
+
+                  <p className="tl-description">{ev.desc}</p>
   
                   <div className="tl-badges">
                     <span
@@ -552,20 +683,19 @@
                         fontFamily: "var(--font-jetbrains-mono)",
                         fontSize: "11px",
                         fontWeight: 600,
-                        color: ev.accent === "#3b82f6" ? "#93c5fd" : "#d8c9fb",
-                        background:
-                          ev.accent === "#3b82f6" ? "rgba(59,130,246,.14)" : "rgba(139,92,246,.16)",
-                        border: `1px solid ${
-                          ev.accent === "#3b82f6" ? "rgba(59,130,246,.35)" : "rgba(139,92,246,.32)"
-                        }`,
+                        color: CATEGORY_META[ev.category].chipColor,
+                        background: CATEGORY_META[ev.category].chipBg,
+                        border: `1px solid ${CATEGORY_META[ev.category].chipBorder}`,
                         borderRadius: "8px",
                         padding: "4px 12px",
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {ev.tag}
+                      {ev.category}
                     </span>
-                    <StatusPill status={ev.status} />
+                    <span className="tl-status-desktop">
+                      <StatusPill status={ev.status} />
+                    </span>
                   </div>
                 </article>
               </div>
