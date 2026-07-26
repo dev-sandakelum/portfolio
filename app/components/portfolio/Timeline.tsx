@@ -1,6 +1,6 @@
 "use client";
-  
-  import { useState } from "react";
+
+import { useState, useEffect, useCallback } from "react";
   
   type Status = "Ongoing" | "Completed";
   type Category = "Experience" | "Education" | "Volunteering";
@@ -148,6 +148,51 @@
     }
   }
   
+  function TimelineLogo({ src, alt }: { src: string; alt: string }) {
+    const [loaded, setLoaded] = useState(false);
+
+    return (
+      <div className="tl-logo-wrap">
+        {!loaded && <span className="tl-logo-shimmer" aria-hidden="true" />}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={src}
+          alt={alt}
+          className={`tl-logo-img${loaded ? " loaded" : ""}`}
+          onLoad={() => setLoaded(true)}
+        />
+      </div>
+    );
+  }
+
+  function TimelineSkeleton({ count = 3 }: { count?: number }) {
+    return (
+      <>
+        {Array.from({ length: count }, (_, i) => (
+          <div key={i} className="tl-row tl-row-skeleton" style={{ animationDelay: `${i * 0.08}s` }}>
+            <div className="tl-meta tl-skeleton-block" aria-hidden="true">
+              <span className="tl-skeleton tl-skeleton-year" />
+              <span className="tl-skeleton tl-skeleton-period" />
+              <span className="tl-skeleton tl-skeleton-pill" />
+            </div>
+            <div className="tl-track tl-track-loading" aria-hidden="true">
+              <span className="tl-dot tl-dot-skeleton" />
+            </div>
+            <div className="tl-card tl-card-skeleton" aria-hidden="true">
+              <span className="tl-skeleton tl-skeleton-icon" />
+              <div className="tl-skeleton-body">
+                <span className="tl-skeleton tl-skeleton-title" />
+                <span className="tl-skeleton tl-skeleton-org" />
+                <span className="tl-skeleton tl-skeleton-desc" />
+                <span className="tl-skeleton tl-skeleton-desc tl-skeleton-desc-short" />
+              </div>
+            </div>
+          </div>
+        ))}
+      </>
+    );
+  }
+
   function StatusPill({ status }: { status: Status }) {
     const ongoing = status === "Ongoing";
     return (
@@ -186,7 +231,26 @@
   
   export default function Timeline() {
     const [filter, setFilter] = useState<Filter>("All");
-    const events = EVENTS.filter((e) => filter === "All" || e.category === filter);
+    const [displayFilter, setDisplayFilter] = useState<Filter>("All");
+    const [loading, setLoading] = useState(false);
+
+    const events = EVENTS.filter((e) => displayFilter === "All" || e.category === displayFilter);
+    const pendingCount = EVENTS.filter((e) => filter === "All" || e.category === filter).length;
+
+    useEffect(() => {
+      if (filter === displayFilter) return;
+      setLoading(true);
+      const timer = window.setTimeout(() => {
+        setDisplayFilter(filter);
+        setLoading(false);
+      }, 320);
+      return () => window.clearTimeout(timer);
+    }, [filter, displayFilter]);
+
+    const handleFilter = useCallback((next: Filter) => {
+      if (next === filter) return;
+      setFilter(next);
+    }, [filter]);
   
     return (
       <section id="timeline" className="relative overflow-hidden" style={{ padding: 0 }}>
@@ -355,6 +419,133 @@
             white-space: nowrap;
           }
           #timeline .tl-chip:hover { border-color: rgba(167,139,250,.5); color: var(--text); }
+
+          /* ---------- loading & entrance ---------- */
+          @keyframes tlShimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+          }
+          @keyframes tlRowEnter {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          @keyframes tlSpineFlow {
+            0% { background-position: 50% -120%; opacity: 0.35; }
+            50% { opacity: 1; }
+            100% { background-position: 50% 220%; opacity: 0.35; }
+          }
+          @keyframes tlDotPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(167,139,250,.35); transform: scale(1); }
+            50% { box-shadow: 0 0 0 6px rgba(167,139,250,0); transform: scale(1.08); }
+          }
+
+          #timeline .tl-skeleton {
+            display: block;
+            border-radius: 8px;
+            background: linear-gradient(
+              90deg,
+              rgba(255,255,255,.04) 0%,
+              rgba(167,139,250,.14) 45%,
+              rgba(96,165,250,.1) 55%,
+              rgba(255,255,255,.04) 100%
+            );
+            background-size: 200% 100%;
+            animation: tlShimmer 1.4s ease-in-out infinite;
+          }
+          #timeline .tl-row-skeleton { pointer-events: none; }
+          #timeline .tl-skeleton-year { width: 52px; height: 18px; margin-left: auto; border-radius: 6px; }
+          #timeline .tl-skeleton-period { width: 88px; height: 11px; margin-left: auto; }
+          #timeline .tl-skeleton-pill { width: 72px; height: 20px; margin-left: auto; border-radius: 999px; }
+          #timeline .tl-skeleton-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            flex-shrink: 0;
+          }
+          #timeline .tl-skeleton-body {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 0;
+          }
+          #timeline .tl-skeleton-title { width: min(220px, 72%); height: 16px; }
+          #timeline .tl-skeleton-org { width: min(140px, 48%); height: 13px; }
+          #timeline .tl-skeleton-desc { width: 100%; height: 11px; }
+          #timeline .tl-skeleton-desc-short { width: 78%; }
+          #timeline .tl-card-skeleton {
+            display: flex;
+            gap: 16px;
+            padding: 18px 20px;
+            border-color: rgba(139,92,246,.12);
+          }
+          #timeline .tl-dot-skeleton {
+            border-color: rgba(167,139,250,.35);
+            animation: tlDotPulse 1.6s ease-in-out infinite;
+          }
+          #timeline .tl-track-loading::before {
+            background: linear-gradient(
+              to bottom,
+              transparent 0%,
+              rgba(167,139,250,.55) 45%,
+              rgba(96,165,250,.45) 55%,
+              transparent 100%
+            );
+            background-size: 100% 40%;
+            animation: tlSpineFlow 1.8s ease-in-out infinite;
+          }
+          #timeline .tl-row-enter {
+            animation: tlRowEnter 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+          }
+          #timeline .tl-row-enter:nth-child(1) { animation-delay: 0.04s; }
+          #timeline .tl-row-enter:nth-child(2) { animation-delay: 0.1s; }
+          #timeline .tl-row-enter:nth-child(3) { animation-delay: 0.16s; }
+          #timeline .tl-row-enter:nth-child(4) { animation-delay: 0.22s; }
+          #timeline .tl-row-enter:nth-child(5) { animation-delay: 0.28s; }
+          #timeline .tl-row-enter:nth-child(6) { animation-delay: 0.34s; }
+
+          #timeline .tl-logo-wrap {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          #timeline .tl-logo-shimmer {
+            position: absolute;
+            inset: 6px;
+            border-radius: 10px;
+            background: linear-gradient(
+              90deg,
+              rgba(255,255,255,.06) 0%,
+              rgba(167,139,250,.18) 50%,
+              rgba(255,255,255,.06) 100%
+            );
+            background-size: 200% 100%;
+            animation: tlShimmer 1.4s ease-in-out infinite;
+          }
+          #timeline .tl-logo-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+            padding: 6px;
+            opacity: 0;
+            transition: opacity 0.35s ease;
+          }
+          #timeline .tl-logo-img.loaded { opacity: 1; }
+
+          @media (prefers-reduced-motion: reduce) {
+            #timeline .tl-skeleton,
+            #timeline .tl-logo-shimmer,
+            #timeline .tl-dot-skeleton,
+            #timeline .tl-track-loading::before,
+            #timeline .tl-row-enter {
+              animation: none !important;
+            }
+            #timeline .tl-logo-img { opacity: 1; transition: none; }
+            #timeline .tl-row-enter { opacity: 1; transform: none; }
+          }
   
           /* ---------- tablet ---------- */
           @media (max-width: 900px) {
@@ -488,6 +679,18 @@
               margin-top: 0;
               border-top: 1px solid var(--border);
             }
+            #timeline .tl-card-skeleton {
+              display: grid;
+              grid-template-columns: 44px minmax(0, 1fr);
+              gap: 12px;
+              padding: 16px;
+            }
+            #timeline .tl-skeleton-icon {
+              width: 44px;
+              height: 44px;
+              border-radius: 12px;
+            }
+            #timeline .tl-meta.tl-skeleton-block { display: none; }
           }
 
           @media (min-width: 681px) {
@@ -542,7 +745,7 @@
                   role="tab"
                   aria-selected={filter === f}
                   className={`tl-filter-btn ${filter === f ? "active" : ""}`}
-                  onClick={() => setFilter(f)}
+                  onClick={() => handleFilter(f)}
                 >
                   {f !== "All" && (
                     <Icon name={CATEGORY_META[f].icon} size={14} />
@@ -554,9 +757,16 @@
           </div>
   
           {/* ---------- Timeline ---------- */}
-          <div>
-            {events.map((ev) => (
-              <div key={ev.title} className="tl-row">
+          <div
+            className={`tl-list${loading ? " tl-list-loading" : ""}`}
+            aria-busy={loading}
+            aria-live="polite"
+          >
+            {loading ? (
+              <TimelineSkeleton count={Math.min(Math.max(pendingCount, 1), 3)} />
+            ) : (
+              events.map((ev) => (
+              <div key={`${displayFilter}-${ev.title}`} className="tl-row tl-row-enter">
                 {/* Left meta (desktop) */}
                 <div className="tl-meta">
                   <span
@@ -630,18 +840,7 @@
                   )}
 
                   <div className="tl-iconbox">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={ev.logo}
-                      alt={ev.org}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "contain",
-                        borderRadius: "10px",
-                        padding: "6px",
-                      }}
-                    />
+                    <TimelineLogo src={ev.logo} alt={ev.org} />
                   </div>
   
                   <div className="tl-card-body">
@@ -699,7 +898,8 @@
                   </div>
                 </article>
               </div>
-            ))}
+            ))
+            )}
           </div>
   
           
