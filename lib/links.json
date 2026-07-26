@@ -14,6 +14,14 @@
         "destinationUrl": "https://github.com/dev-sandakelum"
     },
     {
+        "code": "instagram",
+        "label": "Instagram",
+        "subtitle": "Follow me",
+        "icon": "/link/img/instagram.png",
+        "accent": "#e1306c",
+        "destinationUrl": "https://www.instagram.com/_sandakelum"
+    },
+    {
         "code": "youtube",
         "label": "YouTube",
         "subtitle": "Watch my videos",

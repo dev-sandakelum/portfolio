@@ -1,8 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import linksData from "@/lib/links.json";
 import Sparkle from "./Sparkle";
-
 // ── types ─────────────────────────────────────────────────────────────────────
 
 interface LinkEntry {
@@ -22,6 +22,7 @@ const BRAND_ACCENTS: [RegExp, string][] = [
   [/linkedin/i, "#0a66c2"],
   [/github/i, "#e6edf3"],
   [/youtube/i, "#ff0033"],
+  [/instagram/i, "#e1306c"],
   [/whatsapp/i, "#25d366"],
   [/drive|google/i, "#fbbc05"],
   [/azure|\.net|microsoft|onenote|fabric|powershell/i, "#38bdf8"],
@@ -33,32 +34,66 @@ function accentFor(entry: LinkEntry): string {
   return BRAND_ACCENTS.find(([re]) => re.test(haystack))?.[1] ?? "#a78bfa";
 }
 
+// ── loading pieces ────────────────────────────────────────────────────────────
+
+function LinkIcon({ src }: { src: string }) {
+  const [loaded, setLoaded] = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  return (
+    <div className="lk-icon-wrap">
+      {!loaded && !failed && <span className="lk-icon-shimmer" aria-hidden="true" />}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt=""
+        loading="lazy"
+        className={`lk-icon-img${loaded ? " loaded" : ""}`}
+        onLoad={() => setLoaded(true)}
+        onError={() => setFailed(true)}
+        style={failed ? { display: "none" } : undefined}
+      />
+    </div>
+  );
+}
+
+function LinkCardSkeleton({ delay = 0 }: { delay?: number }) {
+  return (
+    <div
+      className="lk-card lk-card-skeleton"
+      aria-hidden="true"
+      style={{ animationDelay: `${delay}s` }}
+    >
+      <span className="lk-skeleton lk-skeleton-icon" />
+      <div className="lk-skeleton-text">
+        <span className="lk-skeleton lk-skeleton-label" />
+        <span className="lk-skeleton lk-skeleton-subtitle" />
+      </div>
+      <span className="lk-skeleton lk-skeleton-arrow" />
+    </div>
+  );
+}
+
 // ── card ──────────────────────────────────────────────────────────────────────
 
-function LinkCard({ entry }: { entry: LinkEntry }) {
-  const accent = accentFor(entry);
+function LinkCard({ entry, index = 0 }: { entry: LinkEntry; index?: number }) {  const accent = accentFor(entry);
 
   return (
     <a
       href={entry.destinationUrl}
       target="_blank"
       rel="noopener noreferrer"
-      className="lk-card"
-      style={{ "--accent": accent } as React.CSSProperties}
-    >
+      className="lk-card lk-card-enter"
+      style={
+        {
+          "--accent": accent,
+          "--enter-delay": `${0.04 + index * 0.06}s`,
+        } as React.CSSProperties
+      }    >
       {/* Icon tile */}
       <div className="lk-icon">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={entry.icon}
-          alt=""
-          loading="lazy"
-          onError={(e) => {
-            (e.currentTarget as HTMLImageElement).style.display = "none";
-          }}
-        />
+        <LinkIcon src={entry.icon} />
       </div>
-
       {/* Text */}
       <div className="lk-text">
         <div className="lk-label">{entry.label}</div>
@@ -201,8 +236,14 @@ function ChainGraphic() {
 // ── section ───────────────────────────────────────────────────────────────────
 
 export default function Links() {
-  const visibleLinks = (linksData as LinkEntry[]).filter(
-    (l) => !l.hidden && !l.code.startsWith("h/")
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setReady(true), 320);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  const visibleLinks = (linksData as LinkEntry[]).filter(    (l) => !l.hidden && !l.code.startsWith("h/")
   );
 
   // Split into social (top-level codes without "/") and resource links
@@ -232,10 +273,18 @@ export default function Links() {
         {social.length > 0 && (
           <div className="mb-9">
             <SectionHeading icon={<SocialsIcon />} title="Socials" />
-            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3 sm:gap-3">
-              {social.map((entry) => (
-                <LinkCard key={entry.code} entry={entry} />
-              ))}
+            <div
+              className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3 sm:gap-3"
+              aria-busy={!ready}
+              aria-live="polite"
+            >
+              {!ready
+                ? Array.from({ length: Math.min(social.length, 6) }, (_, i) => (
+                    <LinkCardSkeleton key={i} delay={i * 0.05} />
+                  ))
+                : social.map((entry, i) => (
+                    <LinkCard key={entry.code} entry={entry} index={i} />
+                  ))}
             </div>
           </div>
         )}
@@ -244,14 +293,21 @@ export default function Links() {
         {resources.length > 0 && (
           <div>
             <SectionHeading icon={<ResourcesIcon />} title="Resources" />
-            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3 sm:gap-3">
-              {resources.map((entry) => (
-                <LinkCard key={entry.code} entry={entry} />
-              ))}
+            <div
+              className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3 sm:gap-3"
+              aria-busy={!ready}
+              aria-live="polite"
+            >
+              {!ready
+                ? Array.from({ length: Math.min(resources.length, 6) }, (_, i) => (
+                    <LinkCardSkeleton key={i} delay={i * 0.05} />
+                  ))
+                : resources.map((entry, i) => (
+                    <LinkCard key={entry.code} entry={entry} index={i} />
+                  ))}
             </div>
           </div>
-        )}
-      </div>
+        )}      </div>
 
       {/* ── styles ── */}
       <style>{`
@@ -321,8 +377,90 @@ export default function Links() {
           flex-shrink: 0;
         }
 
-        /* ── card ───────────────────────────────────────────── */
-        #links .lk-card {
+        /* ── loading & entrance ─────────────────────────────── */
+        @keyframes lkShimmer {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+        @keyframes lkCardEnter {
+          from { opacity: 0; transform: translateY(14px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        #links .lk-skeleton {
+          display: block;
+          border-radius: 8px;
+          background: linear-gradient(
+            90deg,
+            rgba(255,255,255,.04) 0%,
+            rgba(167,139,250,.14) 45%,
+            rgba(96,165,250,.1) 55%,
+            rgba(255,255,255,.04) 100%
+          );
+          background-size: 200% 100%;
+          animation: lkShimmer 1.4s ease-in-out infinite;
+        }
+        #links .lk-card-skeleton {
+          pointer-events: none;
+          border-color: rgba(139, 92, 246, 0.12);
+        }
+        #links .lk-skeleton-icon {
+          width: 44px;
+          height: 44px;
+          border-radius: 11px;
+          flex-shrink: 0;
+        }
+        #links .lk-skeleton-text {
+          flex: 1;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        #links .lk-skeleton-label { width: min(140px, 58%); height: 14px; }
+        #links .lk-skeleton-subtitle { width: min(100px, 42%); height: 11px; }
+        #links .lk-skeleton-arrow {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          flex-shrink: 0;
+        }
+        #links .lk-card-enter {
+          animation: lkCardEnter 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+          animation-delay: var(--enter-delay, 0s);
+        }
+
+        #links .lk-icon-wrap {
+          position: relative;
+          width: 26px;
+          height: 26px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        #links .lk-icon-shimmer {
+          position: absolute;
+          inset: 0;
+          border-radius: 6px;
+          background: linear-gradient(
+            90deg,
+            rgba(255,255,255,.08) 0%,
+            rgba(167,139,250,.22) 50%,
+            rgba(255,255,255,.08) 100%
+          );
+          background-size: 200% 100%;
+          animation: lkShimmer 1.4s ease-in-out infinite;
+        }
+        #links .lk-icon-img {
+          width: 26px;
+          height: 26px;
+          object-fit: contain;
+          opacity: 0;
+          transition: opacity 0.35s ease;
+        }
+        #links .lk-icon-img.loaded { opacity: 1; }
+
+        /* ── card ───────────────────────────────────────────── */        #links .lk-card {
           display: flex;
           align-items: center;
           gap: 13px;
@@ -367,7 +505,7 @@ export default function Links() {
           border-color: rgba(167, 139, 250, 0.5);
         }
 
-        /* ── icon tile (white, brand-colored glow) ──────────── */
+        /* ── icon tile ──────────────────────────────────────── */
         #links .lk-icon {
           width: 44px;
           height: 44px;
@@ -379,16 +517,12 @@ export default function Links() {
           overflow: hidden;
           background: #fff;
           border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
-          box-shadow:
-            0 0 14px color-mix(in srgb, var(--accent) 45%, transparent),
-            0 0 30px color-mix(in srgb, var(--accent) 18%, transparent);
         }
         #links .lk-icon img {
           width: 26px;
           height: 26px;
           object-fit: contain;
         }
-
         /* ── text ───────────────────────────────────────────── */
         #links .lk-text {
           flex: 1;
@@ -440,11 +574,16 @@ export default function Links() {
             height: 40px;
             border-radius: 10px;
           }
-          #links .lk-icon img {
+          #links .lk-icon-wrap,
+          #links .lk-icon-img {
             width: 24px;
             height: 24px;
           }
-          #links .lk-lede {
+          #links .lk-skeleton-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+          }          #links .lk-lede {
             font-size: 13px;
           }
           #links .lk-title-underline {
@@ -456,8 +595,14 @@ export default function Links() {
           #links .lk-arrow {
             transition: none;
           }
-        }
-      `}</style>
+          #links .lk-skeleton,
+          #links .lk-icon-shimmer,
+          #links .lk-card-enter {
+            animation: none !important;
+          }
+          #links .lk-icon-img { opacity: 1; transition: none; }
+          #links .lk-card-enter { opacity: 1; transform: none; }
+        }      `}</style>
     </section>
   );
 }
